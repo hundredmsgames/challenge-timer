@@ -37,7 +37,8 @@ public class Timer
     {
         get
         {
-            return elapsedTime;
+            long deltaTime = CurrTime - startTime;
+            return elapsedTime + deltaTime;
         }
     }
 
