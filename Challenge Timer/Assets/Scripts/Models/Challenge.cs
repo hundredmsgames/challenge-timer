@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class Challenge
 {
@@ -37,6 +38,35 @@ public class Challenge
 
     public int GetNextTimeInterval()
     {
+
+        switch (type)
+        {
+            case ChallengeType.Finite:
+                //if we are in finite game mode so we will have the same timeInterval always
+                currTimeInterval = timeInterval;
+                break;
+            case ChallengeType.Infinite:
+                //if we are in infinite mode we will change interval every X lap
+                if (currLap >= lapCountForIncrement)
+                {
+                    //increment timeInterval 1
+                    timeInterval++;
+                    //set currTimeInterval equal to timeInterval
+                    currTimeInterval = timeInterval;
+                    //reset current lap count
+                    currLap = 0;
+                }
+                break;
+            case ChallengeType.Random:
+                System.Random rnd = new System.Random();
+                int randomInterval = rnd.Next(randomL, randomR);
+                timeInterval = randomInterval;
+                currTimeInterval = timeInterval;
+                break;
+            default:
+                break;
+        }
+
         if (currLap == 0)
             currTimeInterval = timeInterval;
 
@@ -44,7 +74,11 @@ public class Challenge
         return currTimeInterval;
     }
 
-
+    //if we make a big mistake we get bigger errors so game will end
+    public bool CheckGameState(float lapTime)
+    {
+        return !((lapTime - timeInterval) > absoluteError);
+    }
 
     public string Name
     {
