@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-    enum ChallengeLevel : byte
+    enum ChallengeType : byte
     {
-        Easy,
-        Medium,
-        Hard
+        Finite,
+        Infinite,
+        Random
     }
 
