@@ -8,20 +8,25 @@ public class Timer
     private long elapsedTime;
     private List<int> lapTimes;
 
+    private bool timerStopped;
+
     public Timer()
     {
         lapTimes = new List<int>();
+        timerStopped = true;
     }
 
     public void Start()
     {
         startTime = CurrTime;
+        timerStopped = false;
     }
 
     public void Stop()
     {
         long deltaTime = CurrTime - startTime;
         elapsedTime += deltaTime;
+        timerStopped = true;
     }
 
     public void Lap()
@@ -37,8 +42,14 @@ public class Timer
     {
         get
         {
-            long deltaTime = CurrTime - startTime;
-            return elapsedTime + deltaTime;
+            long deltaTime;
+            if (timerStopped == false)
+            {
+                deltaTime = CurrTime - startTime;
+                return elapsedTime + deltaTime;
+            }
+            else
+                return elapsedTime;
         }
     }
 
