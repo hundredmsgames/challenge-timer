@@ -1,17 +1,35 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
 public class UIController : MonoBehaviour
 {
+    public TextMeshProUGUI textTimeInterval;
+    public TextMeshProUGUI textError;
     public TextMeshProUGUI textSecond;
     public TextMeshProUGUI textMillisec;
 
     private void Start()
     {
-        GameController.Instance.UpdateTimeCallback += UpdateTime;
+        GameController.Instance.UpdateTimeInterval += UpdateTimeInterval;
+        GameController.Instance.UpdateError += UpdateError;
     }
+
+    private void UpdateTimeInterval(int timeInterval)
+    {
+        textTimeInterval.text = (timeInterval / 1000).ToString();
+    }
+
+    private void UpdateError(int error)
+    {
+        DateTime dt = new DateTime(1970, 1, 1, 0, 0, 0, Math.Abs(error));
+
+        textError.text = error > 0 ? "+" : "-";
+        textError.text += dt.Second + "." + dt.Millisecond + "";
+    }
+
 
     private void UpdateTime(int second, int millisec)
     {

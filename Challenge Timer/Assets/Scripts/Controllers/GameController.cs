@@ -7,12 +7,14 @@ public class GameController : MonoBehaviour
     public static GameController Instance;
 
     private List<Challenge> challengeList;
+    private Challenge currChallenge;
     private Timer timer;
 
     private bool isGameStarted;
 
-    public delegate void UpdateTimeHandler(int second, int millisec);
-    public event UpdateTimeHandler UpdateTimeCallback;
+    public delegate void UI_EventHandler(int value);
+    public event UI_EventHandler UpdateTimeInterval;
+    public event UI_EventHandler UpdateError;
 
 	void Awake()
     {
@@ -22,7 +24,9 @@ public class GameController : MonoBehaviour
         Instance = this;
         timer = new Timer();
 
-        CreateChallenges();	
+        CreateChallenges();
+
+        currChallenge = challengeList[0];
 	}
 
     private void CreateChallenges()
@@ -34,34 +38,40 @@ public class GameController : MonoBehaviour
                 Name = "Finite 1",
                 Description = "...",
                 Type = ChallengeType.Finite,
-                TimeInterval = 1000,
-                AbsoluteError = 200
+                TimeInterval = 5000,
+                AbsoluteError = 1000
             },
 
             new Challenge()
             {
-                Name = "Finite 2",
+                Name = "Random",
                 Description = "...",
-                Type = ChallengeType.Finite,
-                TimeInterval = 2000,
-                AbsoluteError = 300
+                Type = ChallengeType.Random,
+                RandomL = 1,
+                RandomR = 5,
+                AbsoluteError = 1000
             }
         };
     }
-	
-	void Update ()
-    {
-        long time = timer.ElapsedTime;
-        UpdateTimeCallback((int)(time / 1000), (int)(time % 1000));
-	}
 
     public void ButtonPressed_StartStop()
     {
         if (isGameStarted == true)
-            timer.Stop();
-        else
-            timer.Start();
+        {
+            int lapTime = timer.Lap();
 
-        isGameStarted = !isGameStarted;
+            if (currChallenge.IsFailed(lapTime) == false)
+            {
+                int error = currChallenge.GetError(lapTime);
+                UpdateError(error);
+            }
+        }
+        else
+        {
+            timer.Start();
+            isGameStarted = true;
+        }
+
+        UpdateTimeInterval(currChallenge.GetNextTimeInterval());
     }
 }

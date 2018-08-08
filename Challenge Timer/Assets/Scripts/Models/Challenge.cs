@@ -35,7 +35,6 @@ public class Challenge
     // This is for random challenges. Inclusive right bound.
     int randomR;
 
-
     int currLap;
 
     public int GetNextTimeInterval()
@@ -56,7 +55,7 @@ public class Challenge
             case ChallengeType.Random:
                 System.Random rnd = new System.Random();
                 int randomInterval = rnd.Next(randomL, randomR + 1);
-                timeInterval = randomInterval;
+                timeInterval = randomInterval * 1000;
                 break;
             default:
                 break;
@@ -67,9 +66,14 @@ public class Challenge
     }
 
     //if we make a big mistake we get bigger errors so game will end
-    public bool IsChallengeFailed(int lapTime)
+    public bool IsFailed(int lapTime)
     {
         return Math.Abs(lapTime - timeInterval) >= absoluteError;
+    }
+
+    public int GetError(int lapTime)
+    {
+        return lapTime - timeInterval;
     }
 
     public string Name

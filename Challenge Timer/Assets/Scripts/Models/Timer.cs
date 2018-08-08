@@ -29,13 +29,15 @@ public class Timer
         timerStopped = true;
     }
 
-    public void Lap()
+    public int Lap()
     {
         long deltaTime = CurrTime - startTime;
         lapTimes.Add((int) deltaTime);
 
         elapsedTime += deltaTime;
         startTime = CurrTime;
+
+        return (int) deltaTime;
     }
 
     public long ElapsedTime
