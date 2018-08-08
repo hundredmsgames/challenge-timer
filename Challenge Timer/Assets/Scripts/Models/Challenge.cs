@@ -21,6 +21,10 @@ public class Challenge
     // Absolute error. In milliseconds.
     int absoluteError;
 
+    // This is for finite challenges. We need to know
+    // total number of lap that player should play.
+    int numberOfLap;
+
     // This is for infinite challenges. We will increase the
     // time interval by a certain amount of lap count.
     int lapCountForIncrement;
@@ -33,51 +37,39 @@ public class Challenge
 
 
     int currLap;
-    int currTimeInterval;
-
 
     public int GetNextTimeInterval()
     {
-
         switch (type)
         {
             case ChallengeType.Finite:
                 //if we are in finite game mode so we will have the same timeInterval always
-                currTimeInterval = timeInterval;
                 break;
             case ChallengeType.Infinite:
                 //if we are in infinite mode we will change interval every X lap
-                if (currLap >= lapCountForIncrement)
+                if (currLap != 0 && currLap % lapCountForIncrement == 0)
                 {
                     //increment timeInterval 1
                     timeInterval++;
-                    //set currTimeInterval equal to timeInterval
-                    currTimeInterval = timeInterval;
-                    //reset current lap count
-                    currLap = 0;
                 }
                 break;
             case ChallengeType.Random:
                 System.Random rnd = new System.Random();
-                int randomInterval = rnd.Next(randomL, randomR);
+                int randomInterval = rnd.Next(randomL, randomR + 1);
                 timeInterval = randomInterval;
-                currTimeInterval = timeInterval;
                 break;
             default:
                 break;
         }
 
-        if (currLap == 0)
-            currTimeInterval = timeInterval;
-
         currLap++;
-        return currTimeInterval;
+        return timeInterval;
     }
 
     //if we make a big mistake we get bigger errors so game will end
-    public bool CheckGameState(float lapTime)
+    public bool IsChallengeFailed(int lapTime)
     {
-        return !((lapTime - timeInterval) > absoluteError);
+        return Math.Abs(lapTime - timeInterval) >= absoluteError;
     }
 
     public string Name
@@ -140,6 +132,19 @@ public class Challenge
         set
         {
             absoluteError = value;
+        }
+    }
+
+    public int NumberOfLap
+    {
+        get
+        {
+            return numberOfLap;
+        }
+
+        set
+        {
+            numberOfLap = value;
         }
     }
 
