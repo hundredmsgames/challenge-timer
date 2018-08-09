@@ -6,7 +6,7 @@ public class GameController : MonoBehaviour
 {
     public static GameController Instance;
 
-    private List<Challenge> challengeList;
+    private Challenge[] challenges;
     private Challenge currChallenge;
     private Timer timer;
 
@@ -26,18 +26,19 @@ public class GameController : MonoBehaviour
 
         CreateChallenges();
 
-        currChallenge = challengeList[0];
+        currChallenge = challenges[1];
 	}
 
     private void CreateChallenges()
     {
-        challengeList = new List<Challenge>()
+        challenges = new Challenge[]
         {
             new Challenge()
             {
                 Name = "Finite 1",
                 Description = "...",
                 Type = ChallengeType.Finite,
+
                 TimeInterval = 5000,
                 AbsoluteError = 1000
             },
@@ -64,6 +65,14 @@ public class GameController : MonoBehaviour
             {
                 int error = currChallenge.GetError(lapTime);
                 UpdateError(error);
+            }
+            else
+            {
+                currChallenge.Reset();
+                timer.Stop();
+                isGameStarted = false;
+
+                // Show that we failed. Update UI.
             }
         }
         else

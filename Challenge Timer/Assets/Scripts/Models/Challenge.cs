@@ -14,6 +14,9 @@ public class Challenge
     // Type of the challenge
     ChallengeType type;
 
+    // Start interval of challenge
+    int startInterval;
+
     // Time interval for finite and infinite challenges.
     // Time unit is milliseconds.
     int timeInterval;
@@ -76,6 +79,12 @@ public class Challenge
         return lapTime - timeInterval;
     }
 
+    public void Reset()
+    {
+        timeInterval = startInterval;
+        currLap = 0;
+    }
+
     public string Name
     {
         get
@@ -110,6 +119,19 @@ public class Challenge
 
         set {
             type = value;
+        }
+    }
+
+    public int StartInterval
+    {
+        get
+        {
+            return startInterval;
+        }
+
+        set
+        {
+            startInterval = value;
         }
     }
 
