@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIController : MonoBehaviour
 {
@@ -15,11 +16,18 @@ public class UIController : MonoBehaviour
     public TextMeshProUGUI text_TimeInterval;
     public TextMeshProUGUI text_Error;
 
+    public GameObject cardPrefab;
+    public Transform cardParent;
+    public Transform[] cardUI;
+
     private void Start()
     {
         gameController = GameController.Instance;
         gameController.UpdateTimeInterval += UpdateTimeInterval;
         gameController.UpdateError += UpdateError;
+
+        ///FOR TESTING
+        CreateUICards();
     }
 
     public void ButtonPressed_OpenChallenges()
@@ -56,5 +64,42 @@ public class UIController : MonoBehaviour
 
         text_Error.text = error > 0 ? "+" : "-";
         text_Error.text += dt.Second + "." + dt.Millisecond + "";
+    }
+    public void CreateUICards()
+    {
+        for (int i = 0; i < gameController.Challenges.Length; i++)
+        {
+            GameObject go = Instantiate(cardPrefab, cardParent);
+            //set the name of the challenge
+            go.GetComponentInChildren<TextMeshProUGUI>().text = gameController.Challenges[i].Name;
+
+            Transform parentObject = go.transform.Find("CardUI");
+            Transform goFound = parentObject.Find(cardUI[0].name);
+            //set time interval
+            goFound.GetComponentInChildren<TextMeshProUGUI>().text = gameController.Challenges[i].TimeInterval.ToString() + " sec";
+            
+            goFound = parentObject.Find(cardUI[1].name);
+            //set absolute error
+            goFound.GetComponentInChildren<TextMeshProUGUI>().text = gameController.Challenges[i].AbsoluteError.ToString() + " ms";
+
+            goFound = parentObject.Find(cardUI[2].name);
+            //set score
+            goFound.GetComponentInChildren<TextMeshProUGUI>().text = "26 sec";
+
+            goFound = parentObject.Find(cardUI[3].name);
+            //set lap count
+            goFound.GetComponentInChildren<TextMeshProUGUI>().text = gameController.Challenges[i].NumberOfLap.ToString();
+
+            goFound = parentObject.Find(cardUI[4].name);
+            //set increment
+            goFound.GetComponentInChildren<TextMeshProUGUI>().text = gameController.Challenges[i].LapCountForIncrement.ToString();
+
+            goFound = parentObject.Find(cardUI[5].name);
+            //set increment
+            goFound.GetComponentInChildren<TextMeshProUGUI>().text = "something";
+
+
+
+        }
     }
 }

@@ -12,6 +12,19 @@ public class GameController : MonoBehaviour
 
     private bool isGameStarted;
 
+    public Challenge[] Challenges
+    {
+        get
+        {
+            return challenges;
+        }
+
+       protected set
+        {
+          challenges = value;
+        }
+    }
+
     public delegate void UI_EventHandler(int value);
     public event UI_EventHandler UpdateTimeInterval;
     public event UI_EventHandler UpdateError;
@@ -26,12 +39,12 @@ public class GameController : MonoBehaviour
 
         CreateChallenges();
 
-        currChallenge = challenges[1];
+        currChallenge = Challenges[1];
 	}
 
     private void CreateChallenges()
     {
-        challenges = new Challenge[]
+        Challenges = new Challenge[]
         {
             new Challenge()
             {
