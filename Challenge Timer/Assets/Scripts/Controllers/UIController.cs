@@ -6,49 +6,55 @@ using UnityEngine;
 
 public class UIController : MonoBehaviour
 {
-    public TextMeshProUGUI textTimeInterval;
-    public TextMeshProUGUI textError;
-    public TextMeshProUGUI textSecond;
-    public TextMeshProUGUI textMillisec;
+    private GameController gameController;
+
+    public GameObject panel_Menu;
+    public GameObject panel_Challenges;
+    public GameObject panel_Game;
+
+    public TextMeshProUGUI text_TimeInterval;
+    public TextMeshProUGUI text_Error;
 
     private void Start()
     {
-        GameController.Instance.UpdateTimeInterval += UpdateTimeInterval;
-        GameController.Instance.UpdateError += UpdateError;
+        gameController = GameController.Instance;
+        gameController.UpdateTimeInterval += UpdateTimeInterval;
+        gameController.UpdateError += UpdateError;
     }
+
+    public void ButtonPressed_OpenChallenges()
+    {
+        Debug.Log("Open Challenges");
+        panel_Menu.SetActive(false);
+        panel_Challenges.SetActive(true);
+    }
+
+    public void ButtonPressed_OpenLeaderboard()
+    {
+        Debug.Log("Open Leaderboard");
+    }
+
+    public void ButtonPressed_Github()
+    {
+        Debug.Log("Github link has not implemented yet.");
+    }
+
+    public void ButtonPressed_FollowTheNumbers()
+    {
+        Debug.Log("Follow The Numbers link has not implemented yet.");
+    }
+
 
     private void UpdateTimeInterval(int timeInterval)
     {
-        textTimeInterval.text = (timeInterval / 1000).ToString();
+        text_TimeInterval.text = (timeInterval / 1000).ToString();
     }
 
     private void UpdateError(int error)
     {
         DateTime dt = new DateTime(1970, 1, 1, 0, 0, 0, Math.Abs(error));
 
-        textError.text = error > 0 ? "+" : "-";
-        textError.text += dt.Second + "." + dt.Millisecond + "";
-    }
-
-
-    private void UpdateTime(int second, int millisec)
-    {
-        string secondStr = "";
-        string millisecStr = "";
-
-        if (second < 10)
-            secondStr += "0";
-
-        secondStr += second;
-
-        if (millisec < 10)
-            millisecStr += "00";
-        else if (millisec < 100)
-            millisecStr += "0";
-
-        millisecStr += millisec;
-
-        textSecond.text = secondStr;
-        textMillisec.text = "." + millisecStr;
+        text_Error.text = error > 0 ? "+" : "-";
+        text_Error.text += dt.Second + "." + dt.Millisecond + "";
     }
 }
