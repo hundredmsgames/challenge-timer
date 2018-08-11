@@ -64,6 +64,26 @@ public class GameController : MonoBehaviour
                 RandomL = 1,
                 RandomR = 5,
                 AbsoluteError = 1000
+            },
+            new Challenge()
+            {
+                Name="I am Smart",
+                Description="...",
+                Type=ChallengeType.Infinite,
+                StartInterval=2000,
+                LapCountForIncrement=3,
+                AbsoluteError=300
+        
+            },
+
+            new Challenge()
+            {
+                Name = "Random",
+                Description = "...",
+                Type = ChallengeType.Random,
+                RandomL = 3,
+                RandomR = 10,
+                AbsoluteError = 400
             }
         };
     }
