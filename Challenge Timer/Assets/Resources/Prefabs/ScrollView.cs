@@ -25,11 +25,7 @@ public class ScrollView : MonoBehaviour {
 	}
     public void ShowListPanelbool()
     {
-        if(showListPanel == true)
-        {
-
-            scrollViewPanel.GetComponent<ScrollRect>().normalizedPosition = new Vector2(Vector2.Lerp(Vector2.zero, new Vector2(0, 1), Time.deltaTime).x, Vector2.Lerp(Vector2.zero, new Vector2(0,1),Time.deltaTime).y);
-        }
+        
         showListPanel = !showListPanel;
     }
     public void ShowListPanel()
