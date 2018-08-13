@@ -2,21 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.UI.Extensions;
 
 public class ScrollView : MonoBehaviour
 {
+    VerticalScrollSnap verticalScrollSnap;
     RectTransform scrollViewPanel;
     bool showListPanel = false;
 	
     // Use this for initialization
 	void Start () {
         scrollViewPanel = this.GetComponent<RectTransform>();
+        verticalScrollSnap = this.GetComponent<VerticalScrollSnap>();
 	}
-
-    float bottom = 0;
 	
     // Update is called once per frame
-	void Update () {
+	void Update ()
+    {
         if (showListPanel)
         {
             ShowListPanel();
@@ -29,7 +31,14 @@ public class ScrollView : MonoBehaviour
 
     public void ShowListPanelbool()
     {
-        
+        if (showListPanel == true)
+        {
+            verticalScrollSnap.enabled = true;
+            
+        }
+        else
+            verticalScrollSnap.enabled = false;
+
         showListPanel = !showListPanel;
     }
 
