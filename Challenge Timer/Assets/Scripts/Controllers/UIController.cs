@@ -10,7 +10,6 @@ public class UIController : MonoBehaviour
     private GameController gameController;
 
     public GameObject panel_Menu;
-    public GameObject panel_Challenges;
     public GameObject panel_Game;
 
     public TextMeshProUGUI text_TimeInterval;
@@ -49,7 +48,6 @@ public class UIController : MonoBehaviour
     {
         Debug.Log("Open Challenges");
         panel_Menu.SetActive(false);
-        panel_Challenges.SetActive(true);
     }
 
     public void ButtonPressed_OpenLeaderboard()

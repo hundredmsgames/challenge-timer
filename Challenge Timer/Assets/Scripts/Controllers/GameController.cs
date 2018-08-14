@@ -6,6 +6,11 @@ public class GameController : MonoBehaviour
 {
     public static GameController Instance;
 
+    public int[] timeIntervals;
+    public int[] absoluteErrors;
+    public int[] totalLapCounts;
+    public int[] lapCountsForIncrement;
+
     private Challenge[] challenges;
     private Challenge currChallenge;
     private Timer timer;
@@ -38,6 +43,7 @@ public class GameController : MonoBehaviour
         timer = new Timer();
 
         CreateChallenges();
+        InitializeOptions();
 
         currChallenge = Challenges[1];
 	}
@@ -86,6 +92,14 @@ public class GameController : MonoBehaviour
                 AbsoluteError = 400
             }
         };
+    }
+
+    private void InitializeOptions()
+    {
+        timeIntervals = new int[] { 1000, 2000, 3000, 5000 };
+        absoluteErrors = new int[] { 100, 200, 500, 1000 };
+        totalLapCounts = new int[] { 1, 2, 3 };
+        lapCountsForIncrement = new int[] { 2, 3, 5 };
     }
 
     public void ButtonPressed_StartStop()
