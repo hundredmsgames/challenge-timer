@@ -6,9 +6,12 @@ public class GameController : MonoBehaviour
 {
     public static GameController Instance;
 
+
+
+    public string[] challengeTypes;
     public int[] timeIntervals;
     public int[] absoluteErrors;
-    public int[] totalLapCounts;
+    public int[] lapCounts;
     public int[] lapCountsForIncrement;
 
     private Challenge[] challenges;
@@ -96,10 +99,11 @@ public class GameController : MonoBehaviour
 
     private void InitializeOptions()
     {
+        challengeTypes = new string[] { "Finite", "Infinite", "Random" };
         timeIntervals = new int[] { 1000, 2000, 3000, 5000 };
-        absoluteErrors = new int[] { 100, 200, 500, 1000 };
-        totalLapCounts = new int[] { 1, 2, 3 };
-        lapCountsForIncrement = new int[] { 2, 3, 5 };
+        absoluteErrors = new int[] { 100, 200, 500 };
+        lapCounts = new int[] { 1, 2, 3 };
+        lapCountsForIncrement = new int[] { 3, 5 };
     }
 
     public void ButtonPressed_StartStop()

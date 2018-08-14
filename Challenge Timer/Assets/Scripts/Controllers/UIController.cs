@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections;
+using UnityEngine.UI.Extensions;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -9,29 +9,32 @@ public class UIController : MonoBehaviour
 {
     private GameController gameController;
 
+    public Transform challengeTypeContent;
+    public Transform errorContent;
+    public Transform timeIntervalContent;
+    public Transform lapCountContent;
+    public Transform incrementLapContent;
+
+    public GameObject pageMediumPrefab;
+    public GameObject pageSmallPrefab;
+
     public GameObject panel_Menu;
     public GameObject panel_Game;
 
     public TextMeshProUGUI text_TimeInterval;
     public TextMeshProUGUI text_Error;
 
-    public GameObject cardPrefab;
-    public Transform cardParent;
-    public Transform[] cardUIElements;
-
     Dictionary<string, Sprite> challengeTypeToSprite;
 
     private void Start()
     {
-
         LoadSprites();
 
         gameController = GameController.Instance;
         gameController.UpdateTimeInterval += UpdateTimeInterval;
         gameController.UpdateError += UpdateError;
 
-        ///FOR TESTING
-        CreateUICards();
+        FillPickerLists();
     }
 
     void LoadSprites()
@@ -44,40 +47,115 @@ public class UIController : MonoBehaviour
         }
     }
 
-    public void ButtonPressed_OpenChallenges()
+    private void FillPickerLists()
     {
-        Debug.Log("Open Challenges");
-        panel_Menu.SetActive(false);
+        // We don't use this. VerticalScrollSnap.RemoveAllChildren need it.
+        GameObject[] removed;
+
+        // Fill challenge types.
+        string[] challengeTypes = gameController.challengeTypes;
+        VerticalScrollSnap challengeTypeSnap = challengeTypeContent.parent.gameObject.GetComponent<VerticalScrollSnap>();
+        challengeTypeSnap.RemoveAllChildren(out removed);
+
+        for (int i = 0; i < challengeTypes.Length; i++)
+        {
+            GameObject page = Instantiate(pageMediumPrefab, challengeTypeContent);
+            page.GetComponentInChildren<TextMeshProUGUI>().text = challengeTypes[i];
+
+            // There was a bug before when we use i variable in delegate.
+            // I don't know if it's still exist. 
+            int index = i;  
+            page.GetComponent<Button>().onClick.AddListener(delegate
+            {
+                challengeTypeSnap.ChangePage(index);
+                challengeTypeContent.parent.parent.gameObject.GetComponent<ScrollView>().ToggleListSize();
+            });
+        }
+        challengeTypeSnap.UpdateLayout();
+
+
+        // Fill absolute errors.
+        int[] errors = gameController.absoluteErrors;
+        VerticalScrollSnap errorSnap = errorContent.parent.gameObject.GetComponent<VerticalScrollSnap>();
+        errorSnap.RemoveAllChildren(out removed);
+
+        for (int i = 0; i < errors.Length; i++)
+        {
+            GameObject page = Instantiate(pageSmallPrefab, errorContent);
+            page.GetComponentInChildren<TextMeshProUGUI>().text = (errors[i] / 1000f).ToString();
+
+            int index = i;
+            page.GetComponent<Button>().onClick.AddListener(delegate
+            {
+                errorSnap.ChangePage(index);
+                errorContent.parent.parent.gameObject.GetComponent<ScrollView>().ToggleListSize();
+            });
+        }
+        errorSnap.UpdateLayout();
+
+
+        // Fill time intervals.
+        int[] timeIntervals = gameController.timeIntervals;
+        VerticalScrollSnap timeIntervalSnap = timeIntervalContent.parent.gameObject.GetComponent<VerticalScrollSnap>();
+        timeIntervalSnap.RemoveAllChildren(out removed);
+
+        for (int i = 0; i < timeIntervals.Length; i++)
+        {
+            GameObject page = Instantiate(pageSmallPrefab, timeIntervalContent);
+            page.GetComponentInChildren<TextMeshProUGUI>().text = (timeIntervals[i] / 1000f).ToString();
+
+            int index = i;
+            page.GetComponent<Button>().onClick.AddListener(delegate
+            {
+                timeIntervalSnap.ChangePage(index);
+                timeIntervalContent.parent.parent.gameObject.GetComponent<ScrollView>().ToggleListSize();
+            });
+        }
+        timeIntervalSnap.UpdateLayout();
+
+
+        // Fill lap counts.
+        int[] lapCounts = gameController.lapCounts;
+        VerticalScrollSnap lapCountSnap = lapCountContent.parent.gameObject.GetComponent<VerticalScrollSnap>();
+        lapCountSnap.RemoveAllChildren(out removed);
+
+        for (int i = 0; i < lapCounts.Length; i++)
+        {
+            GameObject page = Instantiate(pageSmallPrefab, lapCountContent);
+            page.GetComponentInChildren<TextMeshProUGUI>().text = lapCounts[i].ToString();
+
+            int index = i;
+            page.GetComponent<Button>().onClick.AddListener(delegate
+            {
+                lapCountSnap.ChangePage(index);
+                lapCountContent.parent.parent.gameObject.GetComponent<ScrollView>().ToggleListSize();
+            });
+        }
+        lapCountSnap.UpdateLayout();
+
+
+        // Fill lap counts for increment
+        int[] incrementCounts = gameController.lapCountsForIncrement;
+        VerticalScrollSnap incrementCountsSnap = incrementLapContent.parent.gameObject.GetComponent<VerticalScrollSnap>();
+        incrementCountsSnap.RemoveAllChildren(out removed);
+
+        for (int i = 0; i < incrementCounts.Length; i++)
+        {
+            GameObject page = Instantiate(pageSmallPrefab, incrementLapContent);
+            page.GetComponentInChildren<TextMeshProUGUI>().text = incrementCounts[i].ToString();
+
+            int index = i;
+            page.GetComponent<Button>().onClick.AddListener(delegate
+            {
+                incrementCountsSnap.ChangePage(index);
+                incrementLapContent.parent.parent.gameObject.GetComponent<ScrollView>().ToggleListSize();
+            });
+        }
+        incrementCountsSnap.UpdateLayout();
     }
 
-    public void ButtonPressed_OpenLeaderboard()
-    {
-        Debug.Log("Open Leaderboard");
-    }
 
-    public void ButtonPressed_Github()
-    {
-        Debug.Log("Github link has not implemented yet.");
-    }
-
-    public void ButtonPressed_FollowTheNumbers()
-    {
-        Debug.Log("Follow The Numbers link has not implemented yet.");
-    }
-
-
-    private void UpdateTimeInterval(int timeInterval)
-    {
-        text_TimeInterval.text = (timeInterval / 1000).ToString();
-    }
-
-    private void UpdateError(int error)
-    {
-        DateTime dt = new DateTime(1970, 1, 1, 0, 0, 0, Math.Abs(error));
-
-        text_Error.text = error > 0 ? "+" : "-";
-        text_Error.text += dt.Second + "." + dt.Millisecond + "";
-    }
+    /*
     public void CreateUICards()
     {
         for (int i = 0; i < gameController.Challenges.Length; i++)
@@ -112,9 +190,43 @@ public class UIController : MonoBehaviour
             Sprite spriteForType = challengeTypeToSprite[gameController.Challenges[i].Type.ToString()];
             Debug.Log(goFound.name);
             goFound.GetComponentsInChildren<Image>()[1].sprite =spriteForType;
-
-
-
         }
+    }
+    */
+
+
+    public void ButtonPressed_OpenChallenges()
+    {
+        Debug.Log("Open Challenges");
+        panel_Menu.SetActive(false);
+    }
+
+    public void ButtonPressed_OpenLeaderboard()
+    {
+        Debug.Log("Open Leaderboard");
+    }
+
+    public void ButtonPressed_Github()
+    {
+        Debug.Log("Github link has not implemented yet.");
+    }
+
+    public void ButtonPressed_FollowTheNumbers()
+    {
+        Debug.Log("Follow The Numbers link has not implemented yet.");
+    }
+
+
+    private void UpdateTimeInterval(int timeInterval)
+    {
+        text_TimeInterval.text = (timeInterval / 1000).ToString();
+    }
+
+    private void UpdateError(int error)
+    {
+        DateTime dt = new DateTime(1970, 1, 1, 0, 0, 0, Math.Abs(error));
+
+        text_Error.text = error > 0 ? "+" : "-";
+        text_Error.text += dt.Second + "." + dt.Millisecond + "";
     }
 }

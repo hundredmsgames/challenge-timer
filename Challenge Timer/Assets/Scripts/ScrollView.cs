@@ -27,7 +27,7 @@ public class ScrollView : MonoBehaviour
         }
     }
 
-    public void ShowListPanelbool()
+    public void ToggleListSize()
     {
         showListPanel = !showListPanel;
     }
@@ -41,7 +41,7 @@ public class ScrollView : MonoBehaviour
     {
         scrollViewPanel.sizeDelta = new Vector2(
             scrollViewPanel.sizeDelta.x,
-            Mathf.Lerp(scrollViewPanel.sizeDelta.y, 500, Time.deltaTime * 5f)
+            Mathf.Lerp(scrollViewPanel.sizeDelta.y, 240, Time.deltaTime * 5f)
         );
     }
 
@@ -49,7 +49,7 @@ public class ScrollView : MonoBehaviour
     {
         scrollViewPanel.sizeDelta = new Vector2(
             scrollViewPanel.sizeDelta.x,
-            Mathf.Lerp(scrollViewPanel.sizeDelta.y, 90, Time.deltaTime * 5f)
+            Mathf.Lerp(scrollViewPanel.sizeDelta.y, 80, Time.deltaTime * 5f)
         );
     }
 }
