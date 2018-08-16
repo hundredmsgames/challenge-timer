@@ -6,6 +6,8 @@ public class Timer
     private long currTime;
     private long startTime;
     private long elapsedTime;
+    private float maxTimeOutValue = 10000;
+    private float timeOutValue=0;
     private List<int> lapTimes;
 
     private bool timerStopped;
@@ -28,7 +30,14 @@ public class Timer
         elapsedTime += deltaTime;
         timerStopped = true;
     }
+    public bool TimeOutCheck(float time)
+    {
+        timeOutValue += time;
+        if (timeOutValue >= maxTimeOutValue)
+            return true;
 
+        return false;
+    }
     public int Lap()
     {
         long deltaTime = CurrTime - startTime;
@@ -37,9 +46,10 @@ public class Timer
         elapsedTime += deltaTime;
         startTime = CurrTime;
 
+        timeOutValue = 0;
         return (int) deltaTime;
     }
-
+    
     public long ElapsedTime
     {
         get

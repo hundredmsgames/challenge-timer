@@ -195,10 +195,11 @@ public class UIController : MonoBehaviour
     */
 
 
-    public void ButtonPressed_OpenChallenges()
+    public void ButtonPressed_Challenge()
     {
         Debug.Log("Open Challenges");
         panel_Menu.SetActive(false);
+        panel_Game.SetActive(true);
     }
 
     public void ButtonPressed_OpenLeaderboard()
@@ -229,4 +230,31 @@ public class UIController : MonoBehaviour
         text_Error.text = error > 0 ? "+" : "-";
         text_Error.text += dt.Second + "." + dt.Millisecond + "";
     }
+    public void ScrollViewChallengeType(int selectedPage)
+    {
+        gameController.currChallenge.Type = (ChallengeType)(Enum.Parse(typeof(ChallengeType), gameController.challengeTypes[selectedPage]));
+        Debug.Log(selectedPage);
+    }
+    public void ScrollViewChallengeError(int selectedPage)
+    {
+        gameController.currChallenge.AbsoluteError = gameController.absoluteErrors[selectedPage];
+    }
+    public void ScrollViewChallengeTimeInterval(int selectedPage)
+    {
+        gameController.currChallenge.TimeInterval = gameController.timeIntervals[selectedPage
+            ];
+    }
+    
+    public void ScrollViewChallengeLapCount(int selectedPage)
+    {
+        gameController.currChallenge.LapCount = gameController.lapCounts[selectedPage
+            ];
+    }
+    public void ScrollViewChallengeIncrementLapPicker(int selectedPage)
+    {
+        gameController.currChallenge.LapCountForIncrement = gameController.lapCountsForIncrement[selectedPage
+            ];
+    }
+    
+
 }

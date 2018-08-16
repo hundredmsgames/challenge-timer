@@ -7,31 +7,20 @@ public class GameController : MonoBehaviour
     public static GameController Instance;
 
 
-
     public string[] challengeTypes;
     public int[] timeIntervals;
     public int[] absoluteErrors;
     public int[] lapCounts;
     public int[] lapCountsForIncrement;
 
-    private Challenge[] challenges;
-    private Challenge currChallenge;
+    int countDown = 3;
+
+    public Challenge currChallenge;
     private Timer timer;
 
     private bool isGameStarted;
 
-    public Challenge[] Challenges
-    {
-        get
-        {
-            return challenges;
-        }
-
-       protected set
-        {
-          challenges = value;
-        }
-    }
+  
 
     public delegate void UI_EventHandler(int value);
     public event UI_EventHandler UpdateTimeInterval;
@@ -44,59 +33,10 @@ public class GameController : MonoBehaviour
 
         Instance = this;
         timer = new Timer();
-
-        CreateChallenges();
+        
         InitializeOptions();
 
-        currChallenge = Challenges[1];
 	}
-
-    private void CreateChallenges()
-    {
-        Challenges = new Challenge[]
-        {
-            new Challenge()
-            {
-                Name = "Finite 1",
-                Description = "...",
-                Type = ChallengeType.Finite,
-
-                TimeInterval = 5000,
-                AbsoluteError = 1000
-            },
-
-            new Challenge()
-            {
-                Name = "Random",
-                Description = "...",
-                Type = ChallengeType.Random,
-                RandomL = 1,
-                RandomR = 5,
-                AbsoluteError = 1000
-            },
-            new Challenge()
-            {
-                Name="I am Smart",
-                Description="...",
-                Type=ChallengeType.Infinite,
-                StartInterval=2000,
-                LapCountForIncrement=3,
-                AbsoluteError=300
-        
-            },
-
-            new Challenge()
-            {
-                Name = "Random",
-                Description = "...",
-                Type = ChallengeType.Random,
-                RandomL = 3,
-                RandomR = 10,
-                AbsoluteError = 400
-            }
-        };
-    }
-
     private void InitializeOptions()
     {
         challengeTypes = new string[] { "Finite", "Infinite", "Random" };
@@ -112,19 +52,7 @@ public class GameController : MonoBehaviour
         {
             int lapTime = timer.Lap();
 
-            if (currChallenge.IsFailed(lapTime) == false)
-            {
-                int error = currChallenge.GetError(lapTime);
-                UpdateError(error);
-            }
-            else
-            {
-                currChallenge.Reset();
-                timer.Stop();
-                isGameStarted = false;
-
-                // Show that we failed. Update UI.
-            }
+            
         }
         else
         {
@@ -132,6 +60,30 @@ public class GameController : MonoBehaviour
             isGameStarted = true;
         }
 
-        UpdateTimeInterval(currChallenge.GetNextTimeInterval());
+       // UpdateTimeInterval(CurrChallenge.GetNextTimeInterval());
+    }
+    private void Update()
+    {
+        if(isGameStarted && countDown > 0 )
+        {
+            //show on screen with Text obj
+            countDown--;
+            return;
+        }
+        if(isGameStarted && countDown == 0)
+        {
+            
+            //write Go on text object
+            timer.Start();
+            countDown--;
+        }
+        if(isGameStarted)
+        {
+            if(Input.GetMouseButtonDown(0))
+            {
+
+            }
+
+        }
     }
 }

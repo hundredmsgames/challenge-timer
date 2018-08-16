@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class Challenge
+public struct Challenge
 {
     // Name of the challenge
     string name;
@@ -37,6 +37,8 @@ public class Challenge
 
     // This is for random challenges. Inclusive right bound.
     int randomR;
+
+    int lapCount;
 
     int currLap;
 
@@ -210,6 +212,19 @@ public class Challenge
         set
         {
             randomR = value;
+        }
+    }
+
+    public int LapCount
+    {
+        get
+        {
+            return lapCount;
+        }
+
+        set
+        {
+            lapCount = value;
         }
     }
 }
