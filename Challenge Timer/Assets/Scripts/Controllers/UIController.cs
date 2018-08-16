@@ -28,13 +28,13 @@ public class UIController : MonoBehaviour
 
     private void Start()
     {
-        LoadSprites();
+       // LoadSprites();
 
         gameController = GameController.Instance;
         gameController.UpdateTimeInterval += UpdateTimeInterval;
         gameController.UpdateError += UpdateError;
-
         FillPickerLists();
+       
     }
 
     void LoadSprites()
