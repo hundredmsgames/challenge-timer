@@ -24,6 +24,8 @@ public class UIController : MonoBehaviour
     public TextMeshProUGUI text_TimeInterval;
     public TextMeshProUGUI text_Error;
     public TextMeshProUGUI text_Countdown;
+    public TextMeshProUGUI text_seconds;
+    public TextMeshProUGUI text_ms;
 
     Dictionary<string, Sprite> challengeTypeToSprite;
 
@@ -35,6 +37,7 @@ public class UIController : MonoBehaviour
         gameController.UpdateTimeInterval += UpdateTimeInterval;
         gameController.UpdateError += UpdateError;
         gameController.UpdateCountDownText += GameController_UpdateCountDownText;
+        gameController.UpdateTimeText += UpdateTime;
         FillPickerLists();
 
     }
@@ -248,6 +251,16 @@ public class UIController : MonoBehaviour
 
         text_Error.text = (int)error > 0 ? "+" : "-";
         text_Error.text += dt.Second + "." + dt.Millisecond + "";
+    }
+    private void UpdateTime(object time)
+    {
+        if (text_seconds.gameObject.activeSelf == false)
+            text_seconds.gameObject.SetActive(true);
+        int seconds = (int)((long)time / 1000);
+        int ms = (int)((long)time - seconds * 1000);
+
+        text_seconds.text = seconds.ToString();
+        text_ms.text = ms.ToString();
     }
     public void ScrollViewChallengeType(int selectedPage)
     {

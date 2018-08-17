@@ -26,6 +26,7 @@ public class GameController : MonoBehaviour
     public event UI_EventHandler UpdateTimeInterval;
     public event UI_EventHandler UpdateError;
     public event UI_EventHandler UpdateCountDownText;
+    public event UI_EventHandler UpdateTimeText;
 
     void Awake()
     {
@@ -100,6 +101,7 @@ public class GameController : MonoBehaviour
             timer.Start();
             countDown -= Time.deltaTime;
         }
-
+        if(timer !=null && UpdateTimeText != null)
+        UpdateTimeText(timer.ElapsedTime);
     }
 }
