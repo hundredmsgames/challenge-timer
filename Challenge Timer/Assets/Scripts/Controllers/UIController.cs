@@ -23,20 +23,34 @@ public class UIController : MonoBehaviour
 
     public TextMeshProUGUI text_TimeInterval;
     public TextMeshProUGUI text_Error;
+    public TextMeshProUGUI text_Countdown;
 
     Dictionary<string, Sprite> challengeTypeToSprite;
 
     private void Start()
     {
-       // LoadSprites();
+        // LoadSprites();
 
         gameController = GameController.Instance;
         gameController.UpdateTimeInterval += UpdateTimeInterval;
         gameController.UpdateError += UpdateError;
+        gameController.UpdateCountDownText += GameController_UpdateCountDownText;
         FillPickerLists();
-       
-    }
 
+    }
+    /*
+     Game Screen Color
+     FF006C => pinkish
+         */
+
+    private void GameController_UpdateCountDownText(object value)
+    {
+        if (text_Countdown.gameObject.activeSelf == false)
+            text_Countdown.gameObject.SetActive(true);
+        text_Countdown.text = value.ToString();
+
+    }
+   
     void LoadSprites()
     {
         challengeTypeToSprite = new Dictionary<string, Sprite>();
@@ -64,7 +78,7 @@ public class UIController : MonoBehaviour
 
             // There was a bug before when we use i variable in delegate.
             // I don't know if it's still exist. 
-            int index = i;  
+            int index = i;
             page.GetComponent<Button>().onClick.AddListener(delegate
             {
                 challengeTypeSnap.ChangePage(index);
@@ -197,9 +211,10 @@ public class UIController : MonoBehaviour
 
     public void ButtonPressed_Challenge()
     {
-        Debug.Log("Open Challenges");
+
         panel_Menu.SetActive(false);
         panel_Game.SetActive(true);
+        gameController.StartGame();
     }
 
     public void ButtonPressed_OpenLeaderboard()
@@ -218,22 +233,26 @@ public class UIController : MonoBehaviour
     }
 
 
-    private void UpdateTimeInterval(int timeInterval)
+    private void UpdateTimeInterval(object timeInterval)
     {
-        text_TimeInterval.text = (timeInterval / 1000).ToString();
+        if (text_TimeInterval.gameObject.activeSelf == false)
+            text_TimeInterval.gameObject.SetActive(true);
+        text_TimeInterval.text = "Next Interval: "+((int)timeInterval / 1000).ToString();
     }
 
-    private void UpdateError(int error)
+    private void UpdateError(object error)
     {
-        DateTime dt = new DateTime(1970, 1, 1, 0, 0, 0, Math.Abs(error));
+        if (text_Error.gameObject.activeSelf == false)
+            text_Error.gameObject.SetActive(true);
+        DateTime dt = new DateTime(1970, 1, 1, 0, 0, 0, Math.Abs((int)error));
 
-        text_Error.text = error > 0 ? "+" : "-";
+        text_Error.text = (int)error > 0 ? "+" : "-";
         text_Error.text += dt.Second + "." + dt.Millisecond + "";
     }
     public void ScrollViewChallengeType(int selectedPage)
     {
         gameController.currChallenge.Type = (ChallengeType)(Enum.Parse(typeof(ChallengeType), gameController.challengeTypes[selectedPage]));
-        Debug.Log(selectedPage);
+
     }
     public void ScrollViewChallengeError(int selectedPage)
     {
@@ -244,7 +263,7 @@ public class UIController : MonoBehaviour
         gameController.currChallenge.TimeInterval = gameController.timeIntervals[selectedPage
             ];
     }
-    
+
     public void ScrollViewChallengeLapCount(int selectedPage)
     {
         gameController.currChallenge.LapCount = gameController.lapCounts[selectedPage
@@ -255,6 +274,6 @@ public class UIController : MonoBehaviour
         gameController.currChallenge.LapCountForIncrement = gameController.lapCountsForIncrement[selectedPage
             ];
     }
-    
+
 
 }

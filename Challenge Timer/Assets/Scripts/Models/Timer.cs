@@ -23,7 +23,7 @@ public class Timer
         startTime = CurrTime;
         timerStopped = false;
     }
-
+    //LT8H1Q3CAZPU
     public void Stop()
     {
         long deltaTime = CurrTime - startTime;
