@@ -39,8 +39,8 @@ public class UIController : MonoBehaviour
         gameController.UpdateCountDownText += GameController_UpdateCountDownText;
         gameController.UpdateTimeText += UpdateTime;
         FillPickerLists();
-
     }
+
     /*
      Game Screen Color
      FF006C => pinkish
@@ -51,7 +51,6 @@ public class UIController : MonoBehaviour
         if (text_Countdown.gameObject.activeSelf == false)
             text_Countdown.gameObject.SetActive(true);
         text_Countdown.text = value.ToString();
-
     }
    
     void LoadSprites()
@@ -171,50 +170,8 @@ public class UIController : MonoBehaviour
         incrementCountsSnap.UpdateLayout();
     }
 
-
-    /*
-    public void CreateUICards()
-    {
-        for (int i = 0; i < gameController.Challenges.Length; i++)
-        {
-            GameObject go = Instantiate(cardPrefab, cardParent);
-            //set the name of the challenge
-            go.GetComponentInChildren<TextMeshProUGUI>().text = gameController.Challenges[i].Name;
-
-            Transform parentObject = go.transform.Find("CardUI");
-            Transform goFound = parentObject.Find(cardUIElements[0].name);
-            //set time interval
-            goFound.GetComponentInChildren<TextMeshProUGUI>().text = gameController.Challenges[i].TimeInterval.ToString() + " sec";
-            
-            goFound = parentObject.Find(cardUIElements[1].name);
-            //set absolute error
-            goFound.GetComponentInChildren<TextMeshProUGUI>().text = gameController.Challenges[i].AbsoluteError.ToString() + " ms";
-
-            goFound = parentObject.Find(cardUIElements[2].name);
-            //set score
-            goFound.GetComponentInChildren<TextMeshProUGUI>().text = "26 sec";
-
-            goFound = parentObject.Find(cardUIElements[3].name);
-            //set lap count
-            goFound.GetComponentInChildren<TextMeshProUGUI>().text = gameController.Challenges[i].NumberOfLap.ToString();
-
-            goFound = parentObject.Find(cardUIElements[4].name);
-            //set increment
-            goFound.GetComponentInChildren<TextMeshProUGUI>().text = gameController.Challenges[i].LapCountForIncrement.ToString();
-
-            goFound = parentObject.Find(cardUIElements[5].name);
-            //set type
-            Sprite spriteForType = challengeTypeToSprite[gameController.Challenges[i].Type.ToString()];
-            Debug.Log(goFound.name);
-            goFound.GetComponentsInChildren<Image>()[1].sprite =spriteForType;
-        }
-    }
-    */
-
-
     public void ButtonPressed_Challenge()
     {
-
         panel_Menu.SetActive(false);
         panel_Game.SetActive(true);
         gameController.StartGame();
@@ -262,10 +219,10 @@ public class UIController : MonoBehaviour
         text_seconds.text = seconds.ToString();
         text_ms.text = ms.ToString();
     }
+
     public void ScrollViewChallengeType(int selectedPage)
     {
         gameController.currChallenge.Type = (ChallengeType)(Enum.Parse(typeof(ChallengeType), gameController.challengeTypes[selectedPage]));
-
     }
     public void ScrollViewChallengeError(int selectedPage)
     {
@@ -273,20 +230,14 @@ public class UIController : MonoBehaviour
     }
     public void ScrollViewChallengeTimeInterval(int selectedPage)
     {
-        gameController.currChallenge.TimeInterval = gameController.timeIntervals[selectedPage
-            ];
+        gameController.currChallenge.TimeInterval = gameController.timeIntervals[selectedPage];
     }
-
     public void ScrollViewChallengeLapCount(int selectedPage)
     {
-        gameController.currChallenge.LapCount = gameController.lapCounts[selectedPage
-            ];
+        gameController.currChallenge.LapCount = gameController.lapCounts[selectedPage];
     }
     public void ScrollViewChallengeIncrementLapPicker(int selectedPage)
     {
-        gameController.currChallenge.LapCountForIncrement = gameController.lapCountsForIncrement[selectedPage
-            ];
+        gameController.currChallenge.LapCountForIncrement = gameController.lapCountsForIncrement[selectedPage];
     }
-
-
 }

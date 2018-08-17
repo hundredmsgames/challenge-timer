@@ -33,10 +33,10 @@ public struct Challenge
     int lapCountForIncrement;
 
     // This is for random challenges. Inclusive left bound.
-    int randomL;
+    int randomLowerBound;
 
     // This is for random challenges. Inclusive right bound.
-    int randomR;
+    int randomUpperBound;
 
     int lapCount;
 
@@ -59,7 +59,7 @@ public struct Challenge
                 break;
             case ChallengeType.Random:
                 System.Random rnd = new System.Random();
-                int randomInterval = rnd.Next(randomL, randomR + 1);
+                int randomInterval = rnd.Next(randomLowerBound, randomUpperBound + 1);
                 timeInterval = randomInterval * 1000;
                 break;
             default:
@@ -189,29 +189,29 @@ public struct Challenge
         }
     }
 
-    public int RandomL
+    public int RandomLowerBound
     {
         get
         {
-            return randomL;
+            return randomLowerBound;
         }
 
         set
         {
-            randomL = value;
+            randomLowerBound = value;
         }
     }
 
-    public int RandomR
+    public int RandomUpperBound
     {
         get
         {
-            return randomR;
+            return randomUpperBound;
         }
 
         set
         {
-            randomR = value;
+            randomUpperBound = value;
         }
     }
 

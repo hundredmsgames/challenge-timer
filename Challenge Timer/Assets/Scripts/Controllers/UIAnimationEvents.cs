@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class UIAnimationEvents : MonoBehaviour {
 
-    public void SetActive()
+    public void SetDeactive()
     {
         this.gameObject.SetActive(false);
     }

@@ -19,7 +19,7 @@ public class GameController : MonoBehaviour
     private Timer timer;
 
     private bool isGameStarted;
-
+    private bool isCountDownStarted;
 
 
     public delegate void UI_EventHandler(object value);
@@ -37,8 +37,8 @@ public class GameController : MonoBehaviour
         timer = new Timer();
 
         InitializeOptions();
-
     }
+
     private void InitializeOptions()
     {
         challengeTypes = new string[] { "Finite", "Infinite", "Random" };
@@ -47,8 +47,8 @@ public class GameController : MonoBehaviour
         lapCounts = new int[] { 1, 2, 3 };
         lapCountsForIncrement = new int[] { 3, 5 };
 
-        currChallenge.RandomL = 3;
-        currChallenge.RandomR = 5;
+        currChallenge.RandomLowerBound = 3;
+        currChallenge.RandomUpperBound = 5;
     }
 
     public void ButtonPressed_StartStop()
@@ -72,36 +72,44 @@ public class GameController : MonoBehaviour
         }
         else
         {
+            Debug.Log("anybody there");
             timer.Start();
             isGameStarted = true;
         }
 
         // UpdateTimeInterval(CurrChallenge.GetNextTimeInterval());
     }
+
     public void StartGame()
     {
-        isGameStarted = true;
+        isCountDownStarted = true;
         UpdateTimeInterval(currChallenge.TimeInterval);
     }
+
     private void Update()
     {
-        if (isGameStarted && countDown > 1)
+        if (isCountDownStarted && countDown > 1)
         {
             //show on screen with Text obj
             UpdateCountDownText((int)countDown);
             countDown -= Time.deltaTime;
             return;
         }
-        if (isGameStarted && countDown > 0)
+        if (isCountDownStarted && countDown > 0)
         {
-
             //write Go on text object
             UpdateCountDownText("GO");
-
-            timer.Start();
             countDown -= Time.deltaTime;
         }
-        if(timer !=null && UpdateTimeText != null)
-        UpdateTimeText(timer.ElapsedTime);
+
+        if(isCountDownStarted && countDown <= 0f)
+        {
+            timer.Start();
+            isCountDownStarted = false;
+            isGameStarted = true;
+        }
+
+        if(UpdateTimeText != null)
+            UpdateTimeText(timer.ElapsedTime);
     }
 }
