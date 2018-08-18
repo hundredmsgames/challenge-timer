@@ -53,8 +53,8 @@ public struct Challenge
                 //if we are in infinite mode we will change interval every X lap
                 if (currLap != 0 && currLap % lapCountForIncrement == 0)
                 {
-                    //increment timeInterval 1
-                    timeInterval++;
+                    //increment timeInterval 1000 ms
+                    timeInterval += 1000;
                 }
                 break;
             case ChallengeType.Random:

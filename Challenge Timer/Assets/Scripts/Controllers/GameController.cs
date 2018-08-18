@@ -21,7 +21,6 @@ public class GameController : MonoBehaviour
     private bool isGameStarted;
     private bool isCountDownStarted;
 
-
     public delegate void UI_EventHandler(object value);
     public event UI_EventHandler UpdateTimeInterval;
     public event UI_EventHandler UpdateError;
@@ -47,55 +46,50 @@ public class GameController : MonoBehaviour
         lapCounts = new int[] { 1, 2, 3 };
         lapCountsForIncrement = new int[] { 3, 5 };
 
-        currChallenge.RandomLowerBound = 3;
+        currChallenge.RandomLowerBound = 1;
         currChallenge.RandomUpperBound = 5;
+    }
+
+    public void StartGame()
+    {
+        isCountDownStarted = true;
+        UpdateTimeInterval(currChallenge.GetNextTimeInterval());
     }
 
     public void ButtonPressed_StartStop()
     {
         if (isGameStarted == true)
         {
+            int currInterval = currChallenge.TimeInterval;
+            int absError = currChallenge.AbsoluteError;
             int lapTime = timer.Lap();
-            if (Mathf.Abs(currChallenge.GetNextTimeInterval() - lapTime) > currChallenge.AbsoluteError)
+
+            if (Mathf.Abs(lapTime - currInterval) > absError)
             {
                 //failed
                 UpdateCountDownText("failed");
-
             }
             else
             {
-                UpdateError(Mathf.Abs(currChallenge.TimeInterval - lapTime));
-
-                // show what current interval is
-                UpdateTimeInterval(currChallenge.TimeInterval);
+                UpdateError(lapTime - currInterval);
             }
-        }
-        else
-        {
-            Debug.Log("anybody there");
-            timer.Start();
-            isGameStarted = true;
-        }
 
-        // UpdateTimeInterval(CurrChallenge.GetNextTimeInterval());
-    }
-
-    public void StartGame()
-    {
-        isCountDownStarted = true;
-        UpdateTimeInterval(currChallenge.TimeInterval);
+            // show what current interval is
+            UpdateTimeInterval(currChallenge.GetNextTimeInterval());
+        }   
     }
 
     private void Update()
     {
-        if (isCountDownStarted && countDown > 1)
+        if (isCountDownStarted && countDown > 1f)
         {
             //show on screen with Text obj
             UpdateCountDownText((int)countDown);
             countDown -= Time.deltaTime;
             return;
         }
-        if (isCountDownStarted && countDown > 0)
+
+        if (isCountDownStarted && countDown > 0f)
         {
             //write Go on text object
             UpdateCountDownText("GO");

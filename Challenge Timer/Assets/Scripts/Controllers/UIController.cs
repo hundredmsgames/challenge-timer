@@ -72,6 +72,8 @@ public class UIController : MonoBehaviour
         string[] challengeTypes = gameController.challengeTypes;
         VerticalScrollSnap challengeTypeSnap = challengeTypeContent.parent.gameObject.GetComponent<VerticalScrollSnap>();
         challengeTypeSnap.RemoveAllChildren(out removed);
+        foreach (GameObject go in removed)
+            Destroy(go);
 
         for (int i = 0; i < challengeTypes.Length; i++)
         {
@@ -94,6 +96,8 @@ public class UIController : MonoBehaviour
         int[] errors = gameController.absoluteErrors;
         VerticalScrollSnap errorSnap = errorContent.parent.gameObject.GetComponent<VerticalScrollSnap>();
         errorSnap.RemoveAllChildren(out removed);
+        foreach (GameObject go in removed)
+            Destroy(go);
 
         for (int i = 0; i < errors.Length; i++)
         {
@@ -114,6 +118,8 @@ public class UIController : MonoBehaviour
         int[] timeIntervals = gameController.timeIntervals;
         VerticalScrollSnap timeIntervalSnap = timeIntervalContent.parent.gameObject.GetComponent<VerticalScrollSnap>();
         timeIntervalSnap.RemoveAllChildren(out removed);
+        foreach (GameObject go in removed)
+            Destroy(go);
 
         for (int i = 0; i < timeIntervals.Length; i++)
         {
@@ -134,6 +140,8 @@ public class UIController : MonoBehaviour
         int[] lapCounts = gameController.lapCounts;
         VerticalScrollSnap lapCountSnap = lapCountContent.parent.gameObject.GetComponent<VerticalScrollSnap>();
         lapCountSnap.RemoveAllChildren(out removed);
+        foreach (GameObject go in removed)
+            Destroy(go);
 
         for (int i = 0; i < lapCounts.Length; i++)
         {
@@ -154,6 +162,8 @@ public class UIController : MonoBehaviour
         int[] incrementCounts = gameController.lapCountsForIncrement;
         VerticalScrollSnap incrementCountsSnap = incrementLapContent.parent.gameObject.GetComponent<VerticalScrollSnap>();
         incrementCountsSnap.RemoveAllChildren(out removed);
+        foreach (GameObject go in removed)
+            Destroy(go);
 
         for (int i = 0; i < incrementCounts.Length; i++)
         {
@@ -192,27 +202,43 @@ public class UIController : MonoBehaviour
         Debug.Log("Follow The Numbers link has not implemented yet.");
     }
 
-
     private void UpdateTimeInterval(object timeInterval)
     {
         if (text_TimeInterval.gameObject.activeSelf == false)
             text_TimeInterval.gameObject.SetActive(true);
         text_TimeInterval.text = "Next Interval: "+((int)timeInterval / 1000).ToString();
     }
-
     private void UpdateError(object error)
     {
         if (text_Error.gameObject.activeSelf == false)
             text_Error.gameObject.SetActive(true);
-        DateTime dt = new DateTime(1970, 1, 1, 0, 0, 0, Math.Abs((int)error));
 
+        int second = Math.Abs((int)error / 1000);
+        int millisec = Math.Abs((int)error % 1000);
+
+        string secondStr = "";
+        string millisecStr = "";
+
+        if (second > 0 && second < 10)
+            secondStr += "0";
+
+        secondStr += second;
+
+        if (millisec < 10)
+            millisecStr += "00";
+        else if (millisec < 100)
+            millisecStr += "0";
+
+        millisecStr += millisec;
+        
         text_Error.text = (int)error > 0 ? "+" : "-";
-        text_Error.text += dt.Second + "." + dt.Millisecond + "";
+        text_Error.text += secondStr + "." + millisecStr + "";
     }
     private void UpdateTime(object time)
     {
         if (text_seconds.gameObject.activeSelf == false)
             text_seconds.gameObject.SetActive(true);
+
         int seconds = (int)((long)time / 1000);
         int ms = (int)((long)time - seconds * 1000);
 
