@@ -17,12 +17,14 @@ public class UIController : MonoBehaviour
 
     public GameObject pageMediumPrefab;
     public GameObject pageSmallPrefab;
+    public GameObject animatedTextPrefab;
 
     public GameObject panel_Menu;
     public GameObject panel_Game;
 
+    public Transform errorTextContainer;
+
     public TextMeshProUGUI text_TimeInterval;
-    public TextMeshProUGUI text_Error;
     public TextMeshProUGUI text_Countdown;
     public TextMeshProUGUI text_seconds;
     public TextMeshProUGUI text_ms;
@@ -36,7 +38,7 @@ public class UIController : MonoBehaviour
         gameController = GameController.Instance;
         gameController.UpdateTimeInterval += UpdateTimeInterval;
         gameController.UpdateError += UpdateError;
-        gameController.UpdateCountDownText += GameController_UpdateCountDownText;
+        gameController.UpdateCountDownText += UpdateCountDownText;
         gameController.UpdateTimeText += UpdateTime;
         FillPickerLists();
     }
@@ -46,13 +48,6 @@ public class UIController : MonoBehaviour
      FF006C => pinkish
          */
 
-    private void GameController_UpdateCountDownText(object value)
-    {
-        if (text_Countdown.gameObject.activeSelf == false)
-            text_Countdown.gameObject.SetActive(true);
-        text_Countdown.text = value.ToString();
-    }
-   
     void LoadSprites()
     {
         challengeTypeToSprite = new Dictionary<string, Sprite>();
@@ -202,16 +197,28 @@ public class UIController : MonoBehaviour
         Debug.Log("Follow The Numbers link has not implemented yet.");
     }
 
+    private void UpdateCountDownText(object value)
+    {
+        if (text_Countdown.gameObject.activeSelf == false)
+            text_Countdown.gameObject.SetActive(true);
+
+        text_Countdown.text = value.ToString();
+    }
+
     private void UpdateTimeInterval(object timeInterval)
     {
-        if (text_TimeInterval.gameObject.activeSelf == false)
-            text_TimeInterval.gameObject.SetActive(true);
-        text_TimeInterval.text = "Next Interval: "+((int)timeInterval / 1000).ToString();
+        if(text_TimeInterval.text != timeInterval.ToString())
+            text_TimeInterval.gameObject.SetActive(false);
+
+        text_TimeInterval.text = "Count up to "+ ((int)timeInterval / 1000).ToString();
+        text_TimeInterval.gameObject.SetActive(true);
     }
+
     private void UpdateError(object error)
     {
-        if (text_Error.gameObject.activeSelf == false)
-            text_Error.gameObject.SetActive(true);
+        GameObject go = Instantiate(animatedTextPrefab, errorTextContainer);
+        TextMeshProUGUI textError = go.GetComponentInChildren<TextMeshProUGUI>();
+        go.name = "Text_Error";
 
         int second = Math.Abs((int)error / 1000);
         int millisec = Math.Abs((int)error % 1000);
@@ -231,9 +238,10 @@ public class UIController : MonoBehaviour
 
         millisecStr += millisec;
         
-        text_Error.text = (int)error > 0 ? "+" : "-";
-        text_Error.text += secondStr + "." + millisecStr + "";
+        textError.text = (int)error > 0 ? "+" : "-";
+        textError.text += secondStr + "." + millisecStr + "";
     }
+
     private void UpdateTime(object time)
     {
         if (text_seconds.gameObject.activeSelf == false)
@@ -250,18 +258,22 @@ public class UIController : MonoBehaviour
     {
         gameController.currChallenge.Type = (ChallengeType)(Enum.Parse(typeof(ChallengeType), gameController.challengeTypes[selectedPage]));
     }
+
     public void ScrollViewChallengeError(int selectedPage)
     {
         gameController.currChallenge.AbsoluteError = gameController.absoluteErrors[selectedPage];
     }
+
     public void ScrollViewChallengeTimeInterval(int selectedPage)
     {
         gameController.currChallenge.TimeInterval = gameController.timeIntervals[selectedPage];
     }
+
     public void ScrollViewChallengeLapCount(int selectedPage)
     {
         gameController.currChallenge.LapCount = gameController.lapCounts[selectedPage];
     }
+
     public void ScrollViewChallengeIncrementLapPicker(int selectedPage)
     {
         gameController.currChallenge.LapCountForIncrement = gameController.lapCountsForIncrement[selectedPage];

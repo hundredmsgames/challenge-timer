@@ -13,13 +13,14 @@ public class GameController : MonoBehaviour
     public int[] lapCounts;
     public int[] lapCountsForIncrement;
 
-    float countDown = 4;
+    float countDown = 4f;
 
     public Challenge currChallenge;
     private Timer timer;
 
     private bool isGameStarted;
     private bool isCountDownStarted;
+    private bool timeIntervalPopUp;
 
     public delegate void UI_EventHandler(object value);
     public event UI_EventHandler UpdateTimeInterval;
@@ -53,7 +54,6 @@ public class GameController : MonoBehaviour
     public void StartGame()
     {
         isCountDownStarted = true;
-        UpdateTimeInterval(currChallenge.GetNextTimeInterval());
     }
 
     public void ButtonPressed_StartStop()
@@ -94,6 +94,12 @@ public class GameController : MonoBehaviour
             //write Go on text object
             UpdateCountDownText("GO");
             countDown -= Time.deltaTime;
+
+            if(timeIntervalPopUp == false && countDown < 0.5f)
+            {
+                timeIntervalPopUp = true;
+                UpdateTimeInterval(currChallenge.GetNextTimeInterval());
+            }
         }
 
         if(isCountDownStarted && countDown <= 0f)
