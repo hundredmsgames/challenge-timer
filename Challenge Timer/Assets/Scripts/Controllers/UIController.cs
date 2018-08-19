@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 
 public class UIController : MonoBehaviour
 {
@@ -26,8 +27,7 @@ public class UIController : MonoBehaviour
 
     public TextMeshProUGUI text_TimeInterval;
     public TextMeshProUGUI text_Countdown;
-    public TextMeshProUGUI text_seconds;
-    public TextMeshProUGUI text_ms;
+    public TextMeshProUGUI text_time;
 
     Dictionary<string, Sprite> challengeTypeToSprite;
 
@@ -207,10 +207,10 @@ public class UIController : MonoBehaviour
 
     private void UpdateTimeInterval(object timeInterval)
     {
-        if(text_TimeInterval.text != timeInterval.ToString())
+        if (text_TimeInterval.text != timeInterval.ToString())
             text_TimeInterval.gameObject.SetActive(false);
 
-        text_TimeInterval.text = "Count up to "+ ((int)timeInterval / 1000).ToString();
+        text_TimeInterval.text = "Count up to " + ((int)timeInterval / 1000).ToString();
         text_TimeInterval.gameObject.SetActive(true);
     }
 
@@ -237,23 +237,46 @@ public class UIController : MonoBehaviour
             millisecStr += "0";
 
         millisecStr += millisec;
-        
+
         textError.text = (int)error > 0 ? "+" : "-";
         textError.text += secondStr + "." + millisecStr + "";
     }
 
-    private void UpdateTime(object time)
+    private void UpdateTime(object obj)
     {
-        if (text_seconds.gameObject.activeSelf == false)
-            text_seconds.gameObject.SetActive(true);
+        
+        long time = (long)obj;
+        if (text_time.gameObject.activeSelf == false)
+            text_time.gameObject.SetActive(true);
 
-        int seconds = (int)((long)time / 1000);
-        int ms = (int)((long)time - seconds * 1000);
+        int seconds = (int)(time / 1000);
+        int ms = (int)(time - seconds * 1000);
 
-        text_seconds.text = seconds.ToString();
-        text_ms.text = ms.ToString();
+       
+        text_time.text = seconds.ToString() + "   :   " + ms.ToString();
+        
+        //FIXME::
+        //I want to start coroutine in a spesific time interval
+        //we can find a better way
+        if (seconds == 0 && ms > 100 && ms < 120)
+        {
+            StartCoroutine(FadeTextToZeroAlpha(.7f, text_time, Time.deltaTime));
+        }
+
     }
 
+    //https://forum.unity.com/threads/fading-in-out-gui-text-with-c-solved.380822/
+    //I had the almost same idea but this looks way better than my idea
+    public IEnumerator FadeTextToZeroAlpha(float t, TextMeshProUGUI text, float deltaTime)
+    {
+        text.color = new Color(text.color.r, text.color.g, text.color.b, 1);
+        while (text.color.a > 0.0f)
+        {
+            text.color = new Color(text.color.r, text.color.g, text.color.b, text.color.a - (deltaTime / t));
+            yield return null;
+        }
+
+    }
     public void ScrollViewChallengeType(int selectedPage)
     {
         gameController.currChallenge.Type = (ChallengeType)(Enum.Parse(typeof(ChallengeType), gameController.challengeTypes[selectedPage]));

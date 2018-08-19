@@ -43,7 +43,7 @@ public class GameController : MonoBehaviour
     {
         challengeTypes = new string[] { "Finite", "Infinite", "Random" };
         timeIntervals = new int[] { 1000, 2000, 3000, 5000 };
-        absoluteErrors = new int[] { 100, 200, 500 };
+        absoluteErrors = new int[] { 200, 300, 400 ,500};
         lapCounts = new int[] { 1, 2, 3 };
         lapCountsForIncrement = new int[] { 3, 5 };
 
