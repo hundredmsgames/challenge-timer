@@ -46,9 +46,6 @@ public struct Challenge
     {
         switch (type)
         {
-            case ChallengeType.Finite:
-                //if we are in finite game mode so we will have the same timeInterval always
-                break;
             case ChallengeType.Infinite:
                 //if we are in infinite mode we will change interval every X lap
                 if (currLap != 0 && currLap % lapCountForIncrement == 0)

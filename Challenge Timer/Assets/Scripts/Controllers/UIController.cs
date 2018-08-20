@@ -11,10 +11,6 @@ public class UIController : MonoBehaviour
     private GameController gameController;
 
     public Transform challengeTypeContent;
-    public Transform errorContent;
-    public Transform timeIntervalContent;
-    public Transform lapCountContent;
-    public Transform incrementLapContent;
 
     public GameObject pageMediumPrefab;
     public GameObject pageSmallPrefab;
@@ -86,7 +82,9 @@ public class UIController : MonoBehaviour
         }
         challengeTypeSnap.UpdateLayout();
 
-
+        #region OLD CODES
+        /*
+         * WE DONT NEED THESE CODES RIGHT NOW
         // Fill absolute errors.
         int[] errors = gameController.absoluteErrors;
         VerticalScrollSnap errorSnap = errorContent.parent.gameObject.GetComponent<VerticalScrollSnap>();
@@ -173,6 +171,8 @@ public class UIController : MonoBehaviour
             });
         }
         incrementCountsSnap.UpdateLayout();
+        */
+        #endregion
     }
 
     public void ButtonPressed_Challenge()
@@ -244,7 +244,7 @@ public class UIController : MonoBehaviour
 
     private void UpdateTime(object obj)
     {
-        
+
         long time = (long)obj;
         if (text_time.gameObject.activeSelf == false)
             text_time.gameObject.SetActive(true);
@@ -252,9 +252,9 @@ public class UIController : MonoBehaviour
         int seconds = (int)(time / 1000);
         int ms = (int)(time - seconds * 1000);
 
-       
+
         text_time.text = seconds.ToString() + "   :   " + ms.ToString();
-        
+
         //FIXME::
         //I want to start coroutine in a spesific time interval
         //we can find a better way
@@ -280,25 +280,41 @@ public class UIController : MonoBehaviour
     public void ScrollViewChallengeType(int selectedPage)
     {
         gameController.currChallenge.Type = (ChallengeType)(Enum.Parse(typeof(ChallengeType), gameController.challengeTypes[selectedPage]));
+
+        switch (gameController.currChallenge.Type)
+        {
+            case ChallengeType.Infinite:
+                SetChallengeSettings(2000, 400, 3);
+                Debug.Log(gameController.currChallenge.TimeInterval);
+                break;
+            case ChallengeType.Random:
+                //
+                SetChallengeSettings(-1, 400, -1, 1, 5);
+                break;
+            default:
+                break;
+        }
+    }
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="timeInterval"></param>
+    /// <param name="error"></param>
+    /// <param name="lapCountForInc"></param>
+    /// <param name="rl">random lower limit</param>
+    /// <param name="ru">random upper limit</param>
+    private void SetChallengeSettings(int timeInterval, int error, int lapCountForInc, int rl = 0, int ru = 0)
+    {
+        if (error != -1)
+            gameController.currChallenge.AbsoluteError = error;
+        if (timeInterval != -1)
+            gameController.currChallenge.StartInterval = gameController.currChallenge.TimeInterval = timeInterval;
+        if (lapCountForInc != -1)
+            gameController.currChallenge.LapCountForIncrement = lapCountForInc;
+
+        gameController.currChallenge.RandomLowerBound = rl;
+        gameController.currChallenge.RandomUpperBound = ru;
+
     }
 
-    public void ScrollViewChallengeError(int selectedPage)
-    {
-        gameController.currChallenge.AbsoluteError = gameController.absoluteErrors[selectedPage];
-    }
-
-    public void ScrollViewChallengeTimeInterval(int selectedPage)
-    {
-        gameController.currChallenge.TimeInterval = gameController.timeIntervals[selectedPage];
-    }
-
-    public void ScrollViewChallengeLapCount(int selectedPage)
-    {
-        gameController.currChallenge.LapCount = gameController.lapCounts[selectedPage];
-    }
-
-    public void ScrollViewChallengeIncrementLapPicker(int selectedPage)
-    {
-        gameController.currChallenge.LapCountForIncrement = gameController.lapCountsForIncrement[selectedPage];
-    }
 }
