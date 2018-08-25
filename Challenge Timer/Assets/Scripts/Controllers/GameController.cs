@@ -6,27 +6,22 @@ public class GameController : MonoBehaviour
 {
     public static GameController Instance;
 
-
+    public Challenge[] challenges;
+    private Timer[] timer;
     public string[] challengeTypes;
-    public int[] timeIntervals;
-    public int[] absoluteErrors;
-    public int[] lapCounts;
-    public int[] lapCountsForIncrement;
-
-    float countDown = 4f;
-
-    public Challenge currChallenge;
-    private Timer timer;
 
     private bool isGameStarted;
     private bool isCountDownStarted;
     private bool timeIntervalPopUp;
 
-    public delegate void UI_EventHandler(object value);
+    public delegate void UI_EventHandler(object value, int playerIdx);
     public event UI_EventHandler UpdateTimeInterval;
     public event UI_EventHandler UpdateError;
     public event UI_EventHandler UpdateCountDownText;
     public event UI_EventHandler UpdateTimeText;
+
+    float countDown = 4f;
+    public int playerCount = 2;
 
     void Awake()
     {
@@ -34,21 +29,12 @@ public class GameController : MonoBehaviour
             return;
 
         Instance = this;
-        timer = new Timer();
+        challenges = new Challenge[2];
+        timer = new Timer[playerCount];
+        challengeTypes = new string[] { "Infinite", "Random" };
 
-        InitializeOptions();
-    }
-
-    private void InitializeOptions()
-    {
-        challengeTypes = new string[] {  "Infinite", "Random" };
-        timeIntervals = new int[] { 1000, 2000, 3000, 5000 };
-        absoluteErrors = new int[] { 200, 300, 400 ,500};
-        lapCounts = new int[] { 1, 2, 3 };
-        lapCountsForIncrement = new int[] { 3, 5 };
-
-        currChallenge.RandomLowerBound = 1;
-        currChallenge.RandomUpperBound = 5;
+        for (int i = 0; i < timer.Length; i++)
+            timer[i] = new Timer();
     }
 
     public void StartGame()
@@ -56,26 +42,28 @@ public class GameController : MonoBehaviour
         isCountDownStarted = true;
     }
 
-    public void ButtonPressed_StartStop()
+    // Player 1 -> Top
+    // Player 2 -> Bottom
+    public void ButtonPressed_Lap(int playerIdx)
     {
         if (isGameStarted == true)
         {
-            int currInterval = currChallenge.TimeInterval;
-            int absError = currChallenge.AbsoluteError;
-            int lapTime = timer.Lap();
+            int currInterval = challenges[playerIdx].TimeInterval;
+            int absError = challenges[playerIdx].AbsoluteError;
+            int lapTime = timer[playerIdx].Lap();
 
             if (Mathf.Abs(lapTime - currInterval) > absError)
             {
                 //failed
-                UpdateCountDownText("failed");
+                UpdateCountDownText("failed", playerIdx);
             }
             else
             {
-                UpdateError(lapTime - currInterval);
+                UpdateError(lapTime - currInterval, playerIdx);
             }
 
             // show what current interval is
-            UpdateTimeInterval(currChallenge.GetNextTimeInterval());
+            UpdateTimeInterval(challenges[playerIdx].GetNextTimeInterval(), playerIdx);
         }   
     }
 
@@ -84,7 +72,8 @@ public class GameController : MonoBehaviour
         if (isCountDownStarted && countDown > 1f)
         {
             //show on screen with Text obj
-            UpdateCountDownText((int)countDown);
+            UpdateCountDownText((int)countDown, 0);
+            UpdateCountDownText((int)countDown, 1);
             countDown -= Time.deltaTime;
             return;
         }
@@ -92,24 +81,31 @@ public class GameController : MonoBehaviour
         if (isCountDownStarted && countDown > 0f)
         {
             //write Go on text object
-            UpdateCountDownText("GO");
+            UpdateCountDownText("GO", 0);
+            UpdateCountDownText("GO", 1);
             countDown -= Time.deltaTime;
 
-            if(timeIntervalPopUp == false && countDown < 0.5f)
+            if (timeIntervalPopUp == false && countDown < 0.5f)
             {
                 timeIntervalPopUp = true;
-                UpdateTimeInterval(currChallenge.GetNextTimeInterval());
+                for (int i = 0; i < playerCount; i++)
+                    UpdateTimeInterval(challenges[i].GetNextTimeInterval(), i);
             }
         }
 
-        if(isCountDownStarted && countDown <= 0f)
+        if (isCountDownStarted && countDown <= 0f)
         {
-            timer.Start();
+            for (int i = 0; i < playerCount; i++)
+                timer[i].Start();
+
             isCountDownStarted = false;
             isGameStarted = true;
         }
 
-        if(UpdateTimeText != null && timeIntervalPopUp)
-            UpdateTimeText(timer.ElapsedTime);
+        if (UpdateTimeText != null && timeIntervalPopUp)
+        {
+            for (int i = 0; i < playerCount; i++)
+                UpdateTimeText(timer[i].ElapsedTime, i);
+        }
     }
 }

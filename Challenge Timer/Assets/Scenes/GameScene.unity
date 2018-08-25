@@ -1131,10 +1131,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   challengeTypes: []
-  timeIntervals: 
-  absoluteErrors: 
-  lapCounts: 
-  lapCountsForIncrement: 
+  playerCount: 2
 --- !u!4 &382839746
 Transform:
   m_ObjectHideFlags: 0
@@ -1531,7 +1528,7 @@ GameObject:
   - component: {fileID: 749399044}
   - component: {fileID: 749399043}
   m_Layer: 5
-  m_Name: Button_Lap
+  m_Name: Button_Lap_Bottom
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1552,8 +1549,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 320}
-  m_SizeDelta: {x: 0, y: 640}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &749399043
 MonoBehaviour:
@@ -1595,12 +1592,12 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 382839745}
-        m_MethodName: ButtonPressed_StartStop
-        m_Mode: 1
+        m_MethodName: ButtonPressed_Lap
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -1653,7 +1650,7 @@ GameObject:
   - component: {fileID: 821499372}
   - component: {fileID: 821499371}
   m_Layer: 5
-  m_Name: Button_Lap
+  m_Name: Button_Lap_Top
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1674,8 +1671,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 320}
-  m_SizeDelta: {x: 0, y: 640}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &821499371
 MonoBehaviour:
@@ -1717,8 +1714,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 382839745}
-        m_MethodName: ButtonPressed_StartStop
-        m_Mode: 1
+        m_MethodName: ButtonPressed_Lap
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -1986,9 +1983,12 @@ MonoBehaviour:
     type: 2}
   panel_Menu: {fileID: 1983745475}
   panel_Game: {fileID: 79939966}
-  errorTextContainer: {fileID: 149234087}
-  text_TimeInterval_TopPlayer: {fileID: 171208347}
-  text_TimeInterval_BottomPlayer: {fileID: 1324003775}
+  errorTextContainer:
+  - {fileID: 552937639}
+  - {fileID: 149234087}
+  text_TimeIntervals:
+  - {fileID: 171208347}
+  - {fileID: 1324003775}
   text_Countdowns:
   - {fileID: 1661161607}
   - {fileID: 916105213}
@@ -4175,7 +4175,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.000009047899}
+  m_AnchoredPosition: {x: 0, y: 0.000005946532}
   m_SizeDelta: {x: 0, y: -0.0012216121}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1661161603
