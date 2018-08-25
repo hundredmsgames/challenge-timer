@@ -21,7 +21,8 @@ public class UIController : MonoBehaviour
 
     public Transform errorTextContainer;
 
-    public TextMeshProUGUI text_TimeInterval;
+    public TextMeshProUGUI text_TimeInterval_TopPlayer;
+    public TextMeshProUGUI text_TimeInterval_BottomPlayer;
     public TextMeshProUGUI[] text_Countdowns;
     public TextMeshProUGUI[] text_times;
 
@@ -214,11 +215,13 @@ public class UIController : MonoBehaviour
     private void UpdateTimeInterval(object timeInterval)
     {
         // FIXME:
-        if (text_TimeInterval.text != timeInterval.ToString())
-            text_TimeInterval.gameObject.SetActive(false);
+        if (text_TimeInterval_TopPlayer.text != timeInterval.ToString())
+            text_TimeInterval_TopPlayer.gameObject.SetActive(false);
 
-        text_TimeInterval.text = "Count up to " + ((int)timeInterval / 1000).ToString();
-        text_TimeInterval.gameObject.SetActive(true);
+        text_TimeInterval_BottomPlayer.text = text_TimeInterval_TopPlayer.text = "Count up to " + ((int)timeInterval / 1000).ToString();
+        
+        text_TimeInterval_TopPlayer.gameObject.SetActive(true);
+        text_TimeInterval_BottomPlayer.gameObject.SetActive(true);
     }
 
     private void UpdateError(object error)

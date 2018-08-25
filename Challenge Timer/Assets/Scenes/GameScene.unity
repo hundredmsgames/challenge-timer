@@ -1987,7 +1987,8 @@ MonoBehaviour:
   panel_Menu: {fileID: 1983745475}
   panel_Game: {fileID: 79939966}
   errorTextContainer: {fileID: 149234087}
-  text_TimeInterval: {fileID: 1324003775}
+  text_TimeInterval_TopPlayer: {fileID: 171208347}
+  text_TimeInterval_BottomPlayer: {fileID: 1324003775}
   text_Countdowns:
   - {fileID: 1661161607}
   - {fileID: 916105213}
@@ -4174,7 +4175,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.000021693344}
+  m_AnchoredPosition: {x: 0, y: 0.000009047899}
   m_SizeDelta: {x: 0, y: -0.0012216121}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1661161603
