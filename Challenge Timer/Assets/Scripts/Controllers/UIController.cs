@@ -22,8 +22,11 @@ public class UIController : MonoBehaviour
     public Transform errorTextContainer;
 
     public TextMeshProUGUI text_TimeInterval;
-    public TextMeshProUGUI text_Countdown;
-    public TextMeshProUGUI text_time;
+    public TextMeshProUGUI[] text_Countdowns;
+    public TextMeshProUGUI[] text_times;
+
+    // We should reset this variable when the game is restarted.
+    bool isTimerStarted;
 
     Dictionary<string, Sprite> challengeTypeToSprite;
 
@@ -199,14 +202,18 @@ public class UIController : MonoBehaviour
 
     private void UpdateCountDownText(object value)
     {
-        if (text_Countdown.gameObject.activeSelf == false)
-            text_Countdown.gameObject.SetActive(true);
+        foreach(TextMeshProUGUI countdown in text_Countdowns)
+        {
+            if (countdown.gameObject.activeSelf == false)
+                countdown.gameObject.SetActive(true);
 
-        text_Countdown.text = value.ToString();
+            countdown.text = value.ToString();
+        }
     }
 
     private void UpdateTimeInterval(object timeInterval)
     {
+        // FIXME:
         if (text_TimeInterval.text != timeInterval.ToString())
             text_TimeInterval.gameObject.SetActive(false);
 
@@ -220,16 +227,16 @@ public class UIController : MonoBehaviour
         TextMeshProUGUI textError = go.GetComponentInChildren<TextMeshProUGUI>();
         go.name = "Text_Error";
 
-        int second = Math.Abs((int)error / 1000);
+        int seconds = Math.Abs((int)error / 1000);
         int millisec = Math.Abs((int)error % 1000);
 
         string secondStr = "";
         string millisecStr = "";
 
-        if (second > 0 && second < 10)
+        if (seconds > 0 && seconds < 10)
             secondStr += "0";
 
-        secondStr += second;
+        secondStr += seconds;
 
         if (millisec < 10)
             millisecStr += "00";
@@ -244,37 +251,54 @@ public class UIController : MonoBehaviour
 
     private void UpdateTime(object obj)
     {
-
-        long time = (long)obj;
-        if (text_time.gameObject.activeSelf == false)
-            text_time.gameObject.SetActive(true);
-
-        int seconds = (int)(time / 1000);
-        int ms = (int)(time - seconds * 1000);
-
-
-        text_time.text = seconds.ToString() + "   :   " + ms.ToString();
-
-        //FIXME::
-        //I want to start coroutine in a spesific time interval
-        //we can find a better way
-        if (seconds == 0 && ms > 100 && ms < 120)
+        foreach(TextMeshProUGUI t in text_times)
         {
-            StartCoroutine(FadeTextToZeroAlpha(.7f, text_time, Time.deltaTime));
-        }
+            long time = (long)obj;
+            if (t.gameObject.activeSelf == false)
+                t.gameObject.SetActive(true);
 
+            int seconds = (int)(time / 1000);
+            int millisec = (int)(time - seconds * 1000);
+
+            string secondStr = "";
+            string millisecStr = "";
+
+            if (seconds > 0 && seconds < 10)
+                secondStr += "0";
+
+            secondStr += seconds;
+
+            if (millisec < 10)
+                millisecStr += "00";
+            else if (millisec < 100)
+                millisecStr += "0";
+
+            millisecStr += millisec;
+
+            t.text = secondStr + "." + millisecStr;
+
+            //FIXME:
+            //I want to start coroutine in a spesific time interval
+            //we can find a better way
+            if (isTimerStarted == false)
+            {
+                StartCoroutine(FadeTextToZeroAlpha(.7f, t));
+            }
+        }
+        isTimerStarted = true;
     }
 
     //https://forum.unity.com/threads/fading-in-out-gui-text-with-c-solved.380822/
     //I had the almost same idea but this looks way better than my idea
-    public IEnumerator FadeTextToZeroAlpha(float t, TextMeshProUGUI text, float deltaTime)
+    public IEnumerator FadeTextToZeroAlpha(float t, TextMeshProUGUI text)
     {
         text.color = new Color(text.color.r, text.color.g, text.color.b, 1);
         while (text.color.a > 0.0f)
         {
-            text.color = new Color(text.color.r, text.color.g, text.color.b, text.color.a - (deltaTime / t));
+            text.color = new Color(text.color.r, text.color.g, text.color.b, text.color.a - (Time.deltaTime * t));
             yield return null;
         }
+        text.color = new Color(text.color.r, text.color.g, text.color.b, 0);
 
     }
     public void ScrollViewChallengeType(int selectedPage)
@@ -295,6 +319,7 @@ public class UIController : MonoBehaviour
                 break;
         }
     }
+    
     /// <summary>
     /// 
     /// </summary>

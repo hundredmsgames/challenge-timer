@@ -98,7 +98,6 @@ public class GameController : MonoBehaviour
             if(timeIntervalPopUp == false && countDown < 0.5f)
             {
                 timeIntervalPopUp = true;
-                
                 UpdateTimeInterval(currChallenge.GetNextTimeInterval());
             }
         }
@@ -110,7 +109,7 @@ public class GameController : MonoBehaviour
             isGameStarted = true;
         }
 
-        if(UpdateTimeText != null)
+        if(UpdateTimeText != null && timeIntervalPopUp)
             UpdateTimeText(timer.ElapsedTime);
     }
 }
