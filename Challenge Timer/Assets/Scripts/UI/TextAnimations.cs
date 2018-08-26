@@ -9,4 +9,8 @@ public class TextAnimations : MonoBehaviour
         else
             Destroy(this.gameObject);
     }
+    public void FailedTextDeactive()
+    {
+        this.gameObject.transform.parent.gameObject.SetActive(false);
+    }
 }

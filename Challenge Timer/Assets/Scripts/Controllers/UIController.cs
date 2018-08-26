@@ -15,11 +15,11 @@ public class UIController : MonoBehaviour
     public GameObject pageMediumPrefab;
     public GameObject pageSmallPrefab;
     public GameObject animatedTextPrefab;
-    
+
 
     public GameObject panel_Menu;
     public GameObject panel_Game;
-    public GameObject panel_Failed;
+    public GameObject panel_gameEnd;
     public GameObject[] winloseObjects;
     public GameObject[] failedTextObjects;
 
@@ -36,7 +36,6 @@ public class UIController : MonoBehaviour
     int allTimersStarted;
 
     Dictionary<string, Sprite> challengeTypeToSprite;
-    Coroutine coroutine = null;
     private void Start()
     {
         // LoadSprites();
@@ -48,7 +47,38 @@ public class UIController : MonoBehaviour
         gameController.UpdateTimeText += UpdateTime;
         gameController.UpdateWinLoseText += UpdateWinLoseText;
         gameController.UpdateFailedText += UpdateFailedText;
+        gameController.RestartUI += RestartUI;
         FillPickerLists();
+    }
+
+    private void RestartUI(object value, int playerIdx)
+    {
+        //disable game end panel
+        panel_gameEnd.SetActive(false);
+
+        //reset challenges
+        for (int i = 0; i < gameController.playerCount; i++)
+        {
+            gameController.challenges[i].TimeInterval = gameController.challenges[i].StartInterval;
+        }
+
+        //reset win lose texts
+        int otherPlayer = (playerIdx + 1) % gameController.playerCount;
+        text_winlose[playerIdx].gameObject.SetActive(false);
+        text_winlose[otherPlayer].gameObject.SetActive(false);
+
+        text_losetext[playerIdx].gameObject.SetActive(false);
+        text_losetext[otherPlayer].gameObject.SetActive(false);
+
+        for (int i = 0; i < gameController.playerCount; i++)
+        {
+            text_times[i].color = new Color(text_times[i].color.r, text_times[i].color.g, text_times[i].color.b, 1);
+            text_times[i].text = "0.000";
+        }
+
+
+        allTimersStarted = 0;
+
     }
 
     private void UpdateFailedText(object value, int playerIdx)
@@ -68,16 +98,10 @@ public class UIController : MonoBehaviour
         }
 
         text_losetext[otherPlayer].gameObject.SetActive(true);
-        
-       if(coroutine==null)
-            coroutine = StartCoroutine(FailedScreenanim());
-       
-       
-    }
-    IEnumerator FailedScreenanim()
-    {
-        yield return new WaitForSeconds(1);
-        panel_Failed.SetActive(true);
+
+        if (panel_gameEnd.activeSelf == false)
+            panel_gameEnd.SetActive(true);
+
     }
     /*
      Game Screen Color
@@ -133,7 +157,7 @@ public class UIController : MonoBehaviour
             {
                 case ChallengeType.Infinite:
                     SetChallengeSettings(2000, 400, 3);
-                    Debug.Log(gameController.challenges[i].TimeInterval);
+
                     break;
                 case ChallengeType.Random:
                     SetChallengeSettings(-1, 400, -1, 1, 5);
@@ -198,7 +222,7 @@ public class UIController : MonoBehaviour
     private void UpdateCountDownText(object value, int playerIdx)
     {
         TextMeshProUGUI countdown = text_Countdowns[playerIdx];
-        
+
         if (countdown.gameObject.activeSelf == false)
             countdown.gameObject.SetActive(true);
 
@@ -295,5 +319,5 @@ public class UIController : MonoBehaviour
         }
         text.color = new Color(text.color.r, text.color.g, text.color.b, 0);
 
-    }   
+    }
 }

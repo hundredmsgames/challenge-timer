@@ -23,6 +23,7 @@ public class GameController : MonoBehaviour
     public event UI_EventHandler UpdateTimeText;
     public event UI_EventHandler UpdateWinLoseText;
     public event UI_EventHandler UpdateFailedText;
+    public event UI_EventHandler RestartUI;
 
     float defaultCountDown = 4f;
     float countDown;
@@ -47,7 +48,14 @@ public class GameController : MonoBehaviour
     {
         isCountDownStarted = true;
         countDown = defaultCountDown;
-        
+        RestartUI("", 0);
+
+        for (int i = 0; i < timer.Length; i++)
+            timer[i] = new Timer();
+
+        p1_points = 0;
+        p2_points = 0;
+
     }
     public void StartGame()
     {
