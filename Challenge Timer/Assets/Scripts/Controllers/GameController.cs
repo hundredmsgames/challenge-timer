@@ -5,9 +5,13 @@ using UnityEngine;
 public class GameController : MonoBehaviour
 {
     public static GameController Instance;
+
     int maxPoint = 5;
     int p1_points=0;
     int p2_points=0;
+    int p1_sets = 0;
+    int p2_sets = 0;
+
     public Challenge[] challenges;
     private Timer[] timer;
     public string[] challengeTypes;
@@ -47,8 +51,10 @@ public class GameController : MonoBehaviour
     public void StartGame()
     {
         isCountDownStarted = true;
+        RestartGame();
+        p1_sets = 0;
+        p2_sets = 0;
     }
-
     public void RestartGame()
     {
         isCountDownStarted = true;
@@ -135,15 +141,17 @@ public class GameController : MonoBehaviour
         }   
         if(p1_points == maxPoint || p2_points == maxPoint)
         {
+            if (isGameStarted == false)
+                return;
             for (int i = 0; i < playerCount; i++)
             {
                 timer[i].Stop();
             }
             isGameStarted = false;
             if (p1_points == maxPoint)
-                UpdateWinLoseText("", 0);
+                UpdateWinLoseText(++p1_sets, 0);
             else
-                UpdateWinLoseText("", 1);
+                UpdateWinLoseText(++p2_sets, 1);
             //end game 
             //show the failed text to appropriate player
             //show the you won text to appropriate player

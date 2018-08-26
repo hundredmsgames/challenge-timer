@@ -31,6 +31,7 @@ public class UIController : MonoBehaviour
 
     public TextMeshProUGUI[] text_winlose;
     public TextMeshProUGUI[] text_losetext;
+    public TextMeshProUGUI[] text_scores;
 
     // We should reset this variable when the game is restarted.
     int allTimersStarted;
@@ -60,15 +61,12 @@ public class UIController : MonoBehaviour
         for (int i = 0; i < gameController.playerCount; i++)
         {
             gameController.challenges[i].TimeInterval = gameController.challenges[i].StartInterval;
+            winloseObjects[i].SetActive(false);
         }
 
         //reset win lose texts
         int otherPlayer = (playerIdx + 1) % gameController.playerCount;
-        text_winlose[playerIdx].gameObject.SetActive(false);
-        text_winlose[otherPlayer].gameObject.SetActive(false);
-
-        text_losetext[playerIdx].gameObject.SetActive(false);
-        text_losetext[otherPlayer].gameObject.SetActive(false);
+       
 
         for (int i = 0; i < gameController.playerCount; i++)
         {
@@ -100,6 +98,8 @@ public class UIController : MonoBehaviour
 
         if (panel_gameEnd.activeSelf == false)
             panel_gameEnd.SetActive(true);
+
+        text_scores[playerIdx].text = value.ToString();
 
     }
     /*
@@ -190,7 +190,15 @@ public class UIController : MonoBehaviour
     {
         Debug.Log("Follow The Numbers link has not implemented yet.");
     }
+   public void ButtonPressed_MainMenu()
+    {
+        panel_Game.SetActive(false);
+        panel_Menu.SetActive(true);
+        panel_gameEnd.SetActive(false);
+        text_scores[0].text = "0";
+        text_scores[0].text = "0";
 
+    }
     // UPDATE METHODS
 
     private void UpdateCountDownText(object value, int playerIdx)
