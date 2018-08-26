@@ -74,11 +74,10 @@ public class UIController : MonoBehaviour
         {
             text_times[i].color = new Color(text_times[i].color.r, text_times[i].color.g, text_times[i].color.b, 1);
             text_times[i].text = "0.000";
+            text_times[i].gameObject.SetActive(false);
         }
 
-
         allTimersStarted = 0;
-
     }
 
     private void UpdateFailedText(object value, int playerIdx)
@@ -156,42 +155,17 @@ public class UIController : MonoBehaviour
             switch (gameController.challenges[i].Type)
             {
                 case ChallengeType.Infinite:
-                    SetChallengeSettings(2000, 400, 3);
-
+                    gameController.SetChallengeSettings(ChallengeType.Infinite, 2000, 400, 3);
                     break;
                 case ChallengeType.Random:
-                    SetChallengeSettings(-1, 400, -1, 1, 5);
+                    gameController.SetChallengeSettings(ChallengeType.Random, -1, 400, -1, 1, 5);
                     break;
                 default:
                     break;
             }
         }
-
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="timeInterval"></param>
-    /// <param name="error"></param>
-    /// <param name="lapCountForInc"></param>
-    /// <param name="rl">random lower limit</param>
-    /// <param name="ru">random upper limit</param>
-    private void SetChallengeSettings(int timeInterval, int error, int lapCountForInc, int rl = 0, int ru = 0)
-    {
-        for (int i = 0; i < gameController.playerCount; i++)
-        {
-            if (error != -1)
-                gameController.challenges[i].AbsoluteError = error;
-            if (timeInterval != -1)
-                gameController.challenges[i].StartInterval = gameController.challenges[i].TimeInterval = timeInterval;
-            if (lapCountForInc != -1)
-                gameController.challenges[i].LapCountForIncrement = lapCountForInc;
-
-            gameController.challenges[i].RandomLowerBound = rl;
-            gameController.challenges[i].RandomUpperBound = ru;
-        }
-    }
 
     // BUTTON EVENTS
 
@@ -302,7 +276,7 @@ public class UIController : MonoBehaviour
         //I want to start coroutine in a spesific time interval
         //we can find a better way
         if (allTimersStarted < gameController.playerCount)
-            StartCoroutine(FadeTextToZeroAlpha(.7f, t));
+            StartCoroutine(FadeTextToZeroAlpha(.62f, t));
 
         allTimersStarted++;
     }

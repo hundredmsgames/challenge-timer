@@ -41,25 +41,67 @@ public class GameController : MonoBehaviour
         challengeTypes = new string[] { "Infinite", "Random" };
 
         for (int i = 0; i < timer.Length; i++)
-            timer[i] = new Timer();
-        
+            timer[i] = new Timer();       
     }
-    public void RestartGame()
-    {
-        isCountDownStarted = true;
-        countDown = defaultCountDown;
-        RestartUI("", 0);
 
-        for (int i = 0; i < timer.Length; i++)
-            timer[i] = new Timer();
-
-        p1_points = 0;
-        p2_points = 0;
-
-    }
     public void StartGame()
     {
         isCountDownStarted = true;
+    }
+
+    public void RestartGame()
+    {
+        isCountDownStarted = true;
+        timeIntervalPopUp = false;
+        countDown = defaultCountDown;
+        RestartUI("", 0);
+
+        for (int i = 0; i < playerCount; i++)
+        {
+            timer[i] = new Timer();
+        }
+
+        switch (challenges[0].Type)
+        {
+            case ChallengeType.Infinite:
+                SetChallengeSettings(ChallengeType.Infinite, 2000, 400, 3);
+                break;
+            case ChallengeType.Random:
+                SetChallengeSettings(ChallengeType.Random, -1, 400, -1, 1, 5);
+                break;
+            default:
+                break;
+        }
+        
+        p1_points = 0;
+        p2_points = 0;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="timeInterval"></param>
+    /// <param name="error"></param>
+    /// <param name="lapCountForInc"></param>
+    /// <param name="rl">random lower limit</param>
+    /// <param name="ru">random upper limit</param>
+    public void SetChallengeSettings(ChallengeType type, int timeInterval, int error, int lapCountForInc, int rl = 0, int ru = 0)
+    {
+        for (int i = 0; i < playerCount; i++)
+        {
+            challenges[i] = new Challenge();
+            challenges[i].Type = type;
+
+            if (error != -1)
+                challenges[i].AbsoluteError = error;
+            if (timeInterval != -1)
+                challenges[i].StartInterval = challenges[i].TimeInterval = timeInterval;
+            if (lapCountForInc != -1)
+                challenges[i].LapCountForIncrement = lapCountForInc;
+
+            challenges[i].RandomLowerBound = rl;
+            challenges[i].RandomUpperBound = ru;
+        }
     }
 
     // Player 1 -> Top
