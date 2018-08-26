@@ -20,14 +20,16 @@ public class GameController : MonoBehaviour
     private bool isCountDownStarted;
     private bool timeIntervalPopUp;
 
-    public delegate void UI_EventHandler(object value, int playerIdx);
-    public event UI_EventHandler UpdateTimeInterval;
-    public event UI_EventHandler UpdateError;
-    public event UI_EventHandler UpdateCountDownText;
-    public event UI_EventHandler UpdateTimeText;
-    public event UI_EventHandler UpdateWinLoseText;
-    public event UI_EventHandler UpdateFailedText;
-    public event UI_EventHandler RestartUI;
+    public delegate void UI_EventHandler1();
+    public delegate void UI_EventHandler2(object value, int playerIdx);
+    public event UI_EventHandler1 HideScorePanel;
+    public event UI_EventHandler1 RestartUI;
+    public event UI_EventHandler2 UpdateTimeInterval;
+    public event UI_EventHandler2 UpdateError;
+    public event UI_EventHandler2 UpdateCountDownText;
+    public event UI_EventHandler2 UpdateTimeText;
+    public event UI_EventHandler2 UpdateWinLoseText;
+    public event UI_EventHandler2 UpdateFailedText;
 
     float defaultCountDown = 4f;
     float countDown;
@@ -51,16 +53,22 @@ public class GameController : MonoBehaviour
     public void StartGame()
     {
         isCountDownStarted = true;
-        RestartGame();
+        RestartGame(true);
         p1_sets = 0;
         p2_sets = 0;
     }
-    public void RestartGame()
+    public void RestartGame(bool scorePanelClosed)
     {
+        if(scorePanelClosed == false)
+        {
+            HideScorePanel();
+            return;
+        }
+
         isCountDownStarted = true;
         timeIntervalPopUp = false;
         countDown = defaultCountDown;
-        RestartUI("", 0);
+        RestartUI();
 
         for (int i = 0; i < playerCount; i++)
         {

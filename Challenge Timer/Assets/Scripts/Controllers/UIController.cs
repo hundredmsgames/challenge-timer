@@ -8,27 +8,27 @@ using System.Collections;
 
 public class UIController : MonoBehaviour
 {
+    public static UIController Instance;
     private GameController gameController;
+    public Animator showScoreAnimator;
 
-    public Transform challengeTypeContent;
+    Dictionary<string, Sprite> challengeTypeToSprite;
 
     public GameObject pageMediumPrefab;
     public GameObject pageSmallPrefab;
     public GameObject animatedTextPrefab;
 
-
+    public Transform challengeTypeContent;
+    public Transform[] errorTextContainer;
     public GameObject panel_Menu;
     public GameObject panel_Game;
     public GameObject panel_gameEnd;
     public GameObject[] winloseObjects;
     public GameObject[] failedTextObjects;
 
-    public Transform[] errorTextContainer;
-
     public TextMeshProUGUI[] text_TimeIntervals;
     public TextMeshProUGUI[] text_Countdowns;
     public TextMeshProUGUI[] text_times;
-
     public TextMeshProUGUI[] text_winlose;
     public TextMeshProUGUI[] text_losetext;
     public TextMeshProUGUI[] text_scores;
@@ -36,11 +36,17 @@ public class UIController : MonoBehaviour
     // We should reset this variable when the game is restarted.
     int allTimersStarted;
 
-    Dictionary<string, Sprite> challengeTypeToSprite;
+    /*
+     Game Screen Color
+     FF006C => pinkish
+         */
+
     private void Start()
     {
-        // LoadSprites();
+        if (Instance != null)
+            return;
 
+        Instance = this;
         gameController = GameController.Instance;
         gameController.UpdateTimeInterval += UpdateTimeInterval;
         gameController.UpdateError += UpdateError;
@@ -48,64 +54,10 @@ public class UIController : MonoBehaviour
         gameController.UpdateTimeText += UpdateTime;
         gameController.UpdateWinLoseText += UpdateWinLoseText;
         gameController.UpdateFailedText += UpdateFailedText;
+        gameController.HideScorePanel += HideScorePanel;
         gameController.RestartUI += RestartUI;
         FillPickerLists();
     }
-
-    private void RestartUI(object value, int playerIdx)
-    {
-        //disable game end panel
-        panel_gameEnd.SetActive(false);
-
-        //reset challenges
-        for (int i = 0; i < gameController.playerCount; i++)
-        {
-            gameController.challenges[i].TimeInterval = gameController.challenges[i].StartInterval;
-            winloseObjects[i].SetActive(false);
-        }
-
-        //reset win lose texts
-        int otherPlayer = (playerIdx + 1) % gameController.playerCount;
-       
-
-        for (int i = 0; i < gameController.playerCount; i++)
-        {
-            text_times[i].color = new Color(text_times[i].color.r, text_times[i].color.g, text_times[i].color.b, 1);
-            text_times[i].text = "0.000";
-            text_times[i].gameObject.SetActive(false);
-        }
-
-        allTimersStarted = 0;
-    }
-
-    private void UpdateFailedText(object value, int playerIdx)
-    {
-        failedTextObjects[playerIdx].SetActive(true);
-    }
-
-    private void UpdateWinLoseText(object value, int playerIdx)
-    {
-        int otherPlayer = (playerIdx + 1) % gameController.playerCount;
-        text_winlose[playerIdx].text = "You Won";
-        text_winlose[otherPlayer].text = "You Lose";
-        for (int i = 0; i < gameController.playerCount; i++)
-        {
-            winloseObjects[i].SetActive(true);
-            text_TimeIntervals[i].gameObject.SetActive(false);
-        }
-
-        text_losetext[otherPlayer].gameObject.SetActive(true);
-
-        if (panel_gameEnd.activeSelf == false)
-            panel_gameEnd.SetActive(true);
-
-        text_scores[playerIdx].text = value.ToString();
-
-    }
-    /*
-     Game Screen Color
-     FF006C => pinkish
-         */
 
     void LoadSprites()
     {
@@ -167,6 +119,28 @@ public class UIController : MonoBehaviour
     }
 
 
+    // This method will be called when score panel is hidden.
+    public void RestartUI()
+    {
+        // Reset UI elements
+        for (int i = 0; i < gameController.playerCount; i++)
+        {
+            text_times[i].color = new Color(text_times[i].color.r, text_times[i].color.g, text_times[i].color.b, 1);
+            text_times[i].text = "0.000";
+            text_times[i].gameObject.SetActive(false);
+            winloseObjects[i].SetActive(false);
+        }
+
+        allTimersStarted = 0;
+    }
+
+    private void HideScorePanel()
+    {
+        // Hide score panel
+        showScoreAnimator.SetBool("open", false);
+    }
+    
+
     // BUTTON EVENTS
 
     public void ButtonPressed_Challenge()
@@ -176,30 +150,56 @@ public class UIController : MonoBehaviour
         gameController.StartGame();
     }
 
-    public void ButtonPressed_OpenLeaderboard()
-    {
-        Debug.Log("Open Leaderboard");
-    }
-
     public void ButtonPressed_Github()
     {
-        Debug.Log("Github link has not implemented yet.");
+        Application.OpenURL("https://github.com/hundredmsgames/challenge-timer");
     }
 
     public void ButtonPressed_FollowTheNumbers()
     {
-        Debug.Log("Follow The Numbers link has not implemented yet.");
+        Application.OpenURL("https://play.google.com/store/apps/details?id=com.HundredMsGameS.followTheNumbers");
     }
-   public void ButtonPressed_MainMenu()
+
+    public void ButtonPressed_MainMenu()
     {
+        // FIXME: It doesn't work because we make panel_Game SetActive(false).
+        // So animator doesn't work.
+        HideScorePanel();
+
+
         panel_Game.SetActive(false);
         panel_Menu.SetActive(true);
-        panel_gameEnd.SetActive(false);
+        
         text_scores[0].text = "0";
         text_scores[0].text = "0";
 
     }
+
+
     // UPDATE METHODS
+
+    private void UpdateFailedText(object value, int playerIdx)
+    {
+        failedTextObjects[playerIdx].SetActive(true);
+    }
+
+    private void UpdateWinLoseText(object value, int playerIdx)
+    {
+        int otherPlayer = (playerIdx + 1) % gameController.playerCount;
+        text_winlose[playerIdx].text = "You Won";
+        text_winlose[otherPlayer].text = "You Lose";
+
+        for (int i = 0; i < gameController.playerCount; i++)
+        {
+            winloseObjects[i].SetActive(true);
+            text_TimeIntervals[i].gameObject.SetActive(false);
+        }
+
+        text_losetext[otherPlayer].gameObject.SetActive(true);
+        text_scores[playerIdx].text = value.ToString();
+
+        showScoreAnimator.SetBool("open", true);
+    }
 
     private void UpdateCountDownText(object value, int playerIdx)
     {
