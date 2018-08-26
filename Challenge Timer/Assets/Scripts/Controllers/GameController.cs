@@ -5,7 +5,9 @@ using UnityEngine;
 public class GameController : MonoBehaviour
 {
     public static GameController Instance;
-
+    int maxPoint = 5;
+    int p1_points=0;
+    int p2_points=0;
     public Challenge[] challenges;
     private Timer[] timer;
     public string[] challengeTypes;
@@ -19,8 +21,11 @@ public class GameController : MonoBehaviour
     public event UI_EventHandler UpdateError;
     public event UI_EventHandler UpdateCountDownText;
     public event UI_EventHandler UpdateTimeText;
+    public event UI_EventHandler UpdateWinLoseText;
+    public event UI_EventHandler UpdateFailedText;
 
-    float countDown = 4f;
+    float defaultCountDown = 4f;
+    float countDown;
     public int playerCount = 2;
 
     void Awake()
@@ -28,6 +33,7 @@ public class GameController : MonoBehaviour
         if (Instance != null)
             return;
 
+        countDown = defaultCountDown;
         Instance = this;
         challenges = new Challenge[2];
         timer = new Timer[playerCount];
@@ -35,8 +41,14 @@ public class GameController : MonoBehaviour
 
         for (int i = 0; i < timer.Length; i++)
             timer[i] = new Timer();
+        
     }
-
+    public void RestartGame()
+    {
+        isCountDownStarted = true;
+        countDown = defaultCountDown;
+        
+    }
     public void StartGame()
     {
         isCountDownStarted = true;
@@ -55,7 +67,13 @@ public class GameController : MonoBehaviour
             if (Mathf.Abs(lapTime - currInterval) > absError)
             {
                 //failed
-                UpdateCountDownText("failed", playerIdx);
+                UpdateFailedText("", playerIdx);
+
+                if (playerIdx == 0)
+                    p2_points++;
+                else
+                    p1_points++;
+                //update appropriate players game stat object(UPDATE SPRITE??)
             }
             else
             {
@@ -65,6 +83,22 @@ public class GameController : MonoBehaviour
             // show what current interval is
             UpdateTimeInterval(challenges[playerIdx].GetNextTimeInterval(), playerIdx);
         }   
+        if(p1_points == maxPoint || p2_points == maxPoint)
+        {
+            for (int i = 0; i < playerCount; i++)
+            {
+                timer[i].Stop();
+            }
+            isGameStarted = false;
+            if (p1_points == maxPoint)
+                UpdateWinLoseText("", 0);
+            else
+                UpdateWinLoseText("", 1);
+            //end game 
+            //show the failed text to appropriate player
+            //show the you won text to appropriate player
+
+        }
     }
 
     private void Update()

@@ -15,9 +15,13 @@ public class UIController : MonoBehaviour
     public GameObject pageMediumPrefab;
     public GameObject pageSmallPrefab;
     public GameObject animatedTextPrefab;
+    
 
     public GameObject panel_Menu;
     public GameObject panel_Game;
+    public GameObject panel_Failed;
+    public GameObject[] winloseObjects;
+    public GameObject[] failedTextObjects;
 
     public Transform[] errorTextContainer;
 
@@ -25,11 +29,14 @@ public class UIController : MonoBehaviour
     public TextMeshProUGUI[] text_Countdowns;
     public TextMeshProUGUI[] text_times;
 
+    public TextMeshProUGUI[] text_winlose;
+    public TextMeshProUGUI[] text_losetext;
+
     // We should reset this variable when the game is restarted.
     int allTimersStarted;
 
     Dictionary<string, Sprite> challengeTypeToSprite;
-
+    Coroutine coroutine = null;
     private void Start()
     {
         // LoadSprites();
@@ -39,9 +46,39 @@ public class UIController : MonoBehaviour
         gameController.UpdateError += UpdateError;
         gameController.UpdateCountDownText += UpdateCountDownText;
         gameController.UpdateTimeText += UpdateTime;
+        gameController.UpdateWinLoseText += UpdateWinLoseText;
+        gameController.UpdateFailedText += UpdateFailedText;
         FillPickerLists();
     }
 
+    private void UpdateFailedText(object value, int playerIdx)
+    {
+        failedTextObjects[playerIdx].SetActive(true);
+    }
+
+    private void UpdateWinLoseText(object value, int playerIdx)
+    {
+        int otherPlayer = (playerIdx + 1) % gameController.playerCount;
+        text_winlose[playerIdx].text = "You Won";
+        text_winlose[otherPlayer].text = "You Lose";
+        for (int i = 0; i < gameController.playerCount; i++)
+        {
+            winloseObjects[i].SetActive(true);
+            text_TimeIntervals[i].gameObject.SetActive(false);
+        }
+
+        text_losetext[otherPlayer].gameObject.SetActive(true);
+        
+       if(coroutine==null)
+            coroutine = StartCoroutine(FailedScreenanim());
+       
+       
+    }
+    IEnumerator FailedScreenanim()
+    {
+        yield return new WaitForSeconds(1);
+        panel_Failed.SetActive(true);
+    }
     /*
      Game Screen Color
      FF006C => pinkish
