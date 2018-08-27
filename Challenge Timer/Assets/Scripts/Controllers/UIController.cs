@@ -12,7 +12,7 @@ public partial class UIController : MonoBehaviour
     private GameController gameController;
     public Animator showScoreAnimator;
 
-    Dictionary<string, Sprite> challengeTypeToSprite;
+   // Dictionary<string, Sprite> challengeTypeToSprite;
 
     public GameObject pageMediumPrefab;
     public GameObject pageSmallPrefab;
@@ -33,6 +33,8 @@ public partial class UIController : MonoBehaviour
     public TextMeshProUGUI[] text_losetext;
     public TextMeshProUGUI[] text_scores;
 
+    public GameObject[] spriteObjectContainers;
+    Dictionary<string, Sprite> nameToSpriteMap;
     // We should reset this variable when the game is restarted.
     int allTimersStarted;
 
@@ -48,6 +50,9 @@ public partial class UIController : MonoBehaviour
         if (Instance != null)
             return;
 
+
+        
+        LoadSprites();
         Instance = this;
         gameController = GameController.Instance;
         gameController.UpdateTimeInterval += UpdateTimeInterval;
@@ -59,16 +64,25 @@ public partial class UIController : MonoBehaviour
         gameController.HideScorePanel += HideScorePanel;
         gameController.RestartUI += RestartUI;
         gameController.ShowScorePanel += ShowScorePanel;
+        gameController.UpdateInfoSprites += UpdateInfoSprites;
         FillPickerLists();
+    }
+
+    private void UpdateInfoSprites(object value, int playerIdx)
+    {
+        int index = (int)value;
+        Image image = spriteObjectContainers[playerIdx].GetComponentsInChildren<Image>()[index];
+
+        image.sprite = nameToSpriteMap["wrong"];
     }
 
     void LoadSprites()
     {
-        challengeTypeToSprite = new Dictionary<string, Sprite>();
-        Sprite[] sprites = Resources.LoadAll<Sprite>("Sprites/challengeType");
+        nameToSpriteMap = new Dictionary<string, Sprite>();
+        Sprite[] sprites = Resources.LoadAll<Sprite>("Sprites/Icons");
         for (int i = 0; i < sprites.Length; i++)
         {
-            challengeTypeToSprite.Add(sprites[i].name, sprites[i]);
+            nameToSpriteMap.Add(sprites[i].name, sprites[i]);
         }
     }
 

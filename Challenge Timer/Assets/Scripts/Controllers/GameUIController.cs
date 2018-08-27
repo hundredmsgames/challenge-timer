@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public partial class UIController : MonoBehaviour
 {
@@ -71,6 +72,16 @@ public partial class UIController : MonoBehaviour
             text_times[i].text = "0.000";
             text_times[i].gameObject.SetActive(false);
             winloseObjects[i].SetActive(false);
+        }
+
+        //reset Info images
+        for (int i = 0; i < spriteObjectContainers.Length; i++)
+        {
+            Image[] images = spriteObjectContainers[i].GetComponentsInChildren<Image>();
+            for (int j = 0; j < images.Length; j++)
+            {
+                images[j].sprite = nameToSpriteMap["check"];
+            }
         }
 
         allTimersStarted = 0;

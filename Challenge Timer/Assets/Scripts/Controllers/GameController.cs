@@ -8,8 +8,8 @@ public class GameController : MonoBehaviour
     public static GameController Instance;
 
     int maxPoint = 5;
-    int p1_points=0;
-    int p2_points=0;
+    int p1_points;
+    int p2_points;
     int p1_sets = 0;
     int p2_sets = 0;
 
@@ -21,17 +21,18 @@ public class GameController : MonoBehaviour
     public bool isCountDownStarted;
     private bool timeIntervalPopUp;
 
-    public delegate void UI_EventHandler1();
-    public delegate void UI_EventHandler2(object value, int playerIdx);
-    public event UI_EventHandler1 HideScorePanel;
-    public event UI_EventHandler1 ShowScorePanel;
-    public event UI_EventHandler1 RestartUI;
-    public event UI_EventHandler2 UpdateTimeInterval;
-    public event UI_EventHandler2 UpdateError;
-    public event UI_EventHandler2 UpdateCountDownText;
-    public event UI_EventHandler2 UpdateTimeText;
-    public event UI_EventHandler2 UpdateWinLoseText;
-    public event UI_EventHandler2 UpdateFailedText;
+    public delegate void UI_EventHandlerNoParams();
+    public delegate void UI_EventHandlerWithParams(object value, int playerIdx);
+    public event UI_EventHandlerNoParams HideScorePanel;
+    public event UI_EventHandlerNoParams ShowScorePanel;
+    public event UI_EventHandlerNoParams RestartUI;
+    public event UI_EventHandlerWithParams UpdateTimeInterval;
+    public event UI_EventHandlerWithParams UpdateError;
+    public event UI_EventHandlerWithParams UpdateCountDownText;
+    public event UI_EventHandlerWithParams UpdateTimeText;
+    public event UI_EventHandlerWithParams UpdateWinLoseText;
+    public event UI_EventHandlerWithParams UpdateFailedText;
+    public event UI_EventHandlerWithParams UpdateInfoSprites;
 
     float defaultCountDown = 4f;
     float countDown;
@@ -42,6 +43,7 @@ public class GameController : MonoBehaviour
         if (Instance != null)
             return;
 
+        p1_points = p2_points = maxPoint;
         countDown = defaultCountDown;
         Instance = this;
         challenges = new Challenge[2];
@@ -82,8 +84,8 @@ public class GameController : MonoBehaviour
                 break;
         }
         
-        p1_points = 0;
-        p2_points = 0;
+        p1_points = maxPoint;
+        p2_points = maxPoint;
     }
 
     // Player 1 -> Top
@@ -102,10 +104,17 @@ public class GameController : MonoBehaviour
                 UpdateFailedText("", playerIdx);
 
                 if (playerIdx == 0)
-                    p2_points++;
+                {
+                    p1_points--;
+                    UpdateInfoSprites(p1_points, 0);
+                }
                 else
-                    p1_points++;
+                {
+                    p2_points--;
+                    UpdateInfoSprites(p2_points, 1);
+                }
                 //update appropriate players game stat object(UPDATE SPRITE??)
+                
             }
             else
             {
@@ -116,7 +125,7 @@ public class GameController : MonoBehaviour
             UpdateTimeInterval(challenges[playerIdx].GetNextTimeInterval(), playerIdx);
         }
 
-        if(p1_points == maxPoint || p2_points == maxPoint)
+        if(p1_points == 0 || p2_points == 0)
         {
             if (isGameStarted == false)
                 return;
@@ -124,10 +133,10 @@ public class GameController : MonoBehaviour
             for (int i = 0; i < playerCount; i++)
                 timer[i].Stop();
             
-            if (p1_points == maxPoint)
-                UpdateWinLoseText(++p1_sets, 0);
-            else
+            if (p1_points == 0)
                 UpdateWinLoseText(++p2_sets, 1);
+            else
+                UpdateWinLoseText(++p1_sets, 0);
 
             ShowScorePanel();
             isGameStarted = false;
