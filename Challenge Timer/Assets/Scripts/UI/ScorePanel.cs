@@ -6,6 +6,7 @@ public class ScorePanel : MonoBehaviour
 {
     public void Restart()
     {
-        GameController.Instance.RestartGame(true);
+       // GameController.Instance.RestartGame(true);
+        
     }
 }

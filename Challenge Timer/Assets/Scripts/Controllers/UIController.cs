@@ -117,7 +117,16 @@ public class UIController : MonoBehaviour
             }
         }
     }
-
+    public void RestartButtonPressed()
+    {
+        HideScorePanel();
+        //StopAllCoroutines();
+        StartCoroutine(
+        WaitForAnims(1f, () => {
+            gameController.RestartGame(false);
+        })
+        );
+    }
 
     // This method will be called when score panel is hidden.
     public void RestartUI()
@@ -139,7 +148,7 @@ public class UIController : MonoBehaviour
         // Hide score panel
         showScoreAnimator.SetBool("open", false);
     }
-    
+
 
     // BUTTON EVENTS
 
@@ -166,16 +175,25 @@ public class UIController : MonoBehaviour
         // So animator doesn't work.
         HideScorePanel();
 
-
-        panel_Game.SetActive(false);
-        panel_Menu.SetActive(true);
+        //StopAllCoroutines();
+        StartCoroutine(WaitForAnims(1f ,()=> {
+            panel_Game.SetActive(false);
+            panel_Menu.SetActive(true);
+        }));
         
         text_scores[0].text = "0";
         text_scores[0].text = "0";
 
     }
 
+    IEnumerator WaitForAnims(float time, Action func)
+    {
+        yield return new WaitForSeconds(time);
 
+        if (func != null)
+            func();
+
+    }
     // UPDATE METHODS
 
     private void UpdateFailedText(object value, int playerIdx)

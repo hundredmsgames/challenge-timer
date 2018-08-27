@@ -59,11 +59,11 @@ public class GameController : MonoBehaviour
     }
     public void RestartGame(bool scorePanelClosed)
     {
-        if(scorePanelClosed == false)
-        {
-            HideScorePanel();
-            return;
-        }
+        //if (scorePanelClosed == false)
+        //{
+        //    HideScorePanel();
+        //    return;
+        //}
 
         isCountDownStarted = true;
         timeIntervalPopUp = false;
