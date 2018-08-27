@@ -50,8 +50,6 @@ public partial class UIController : MonoBehaviour
         if (Instance != null)
             return;
 
-
-        
         LoadSprites();
         Instance = this;
         gameController = GameController.Instance;
@@ -65,16 +63,11 @@ public partial class UIController : MonoBehaviour
         gameController.RestartUI += RestartUI;
         gameController.ShowScorePanel += ShowScorePanel;
         gameController.UpdateInfoSprites += UpdateInfoSprites;
+        gameController.HideTimers += HideTimers;
         FillPickerLists();
     }
 
-    private void UpdateInfoSprites(object value, int playerIdx)
-    {
-        int index = (int)value;
-        Image image = spriteObjectContainers[playerIdx].GetComponentsInChildren<Image>()[index];
-
-        image.sprite = nameToSpriteMap["wrong"];
-    }
+    
 
     void LoadSprites()
     {
@@ -124,15 +117,24 @@ public partial class UIController : MonoBehaviour
             switch (gameController.challenges[i].Type)
             {
                 case ChallengeType.Infinite:
-                    gameController.SetChallengeSettings(ChallengeType.Infinite, 2000, 400, 3);
+                case ChallengeType.Kids:
+                    gameController.SetChallengeSettings(gameController.challenges[i].Type, 2000, 500, 3);
                     break;
                 case ChallengeType.Random:
-                    gameController.SetChallengeSettings(ChallengeType.Random, -1, 400, -1, 1, 5);
+                    gameController.SetChallengeSettings(gameController.challenges[i].Type, -1, 400, -1, 1, 5);
                     break;
                 default:
                     break;
             }
         }
+    }
+
+    private void UpdateInfoSprites(object value, int playerIdx)
+    {
+        int index = (int)value;
+        Image image = spriteObjectContainers[playerIdx].GetComponentsInChildren<Image>()[index];
+
+        image.sprite = nameToSpriteMap["wrong"];
     }
 
 

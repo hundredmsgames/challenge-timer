@@ -18,7 +18,7 @@ public class GameController : MonoBehaviour
     public string[] challengeTypes;
 
     public bool isGameStarted;
-    public bool isCountDownStarted;
+    public bool isCountDownRunning;
     private bool timeIntervalPopUp;
 
     public delegate void UI_EventHandlerNoParams();
@@ -26,6 +26,7 @@ public class GameController : MonoBehaviour
     public event UI_EventHandlerNoParams HideScorePanel;
     public event UI_EventHandlerNoParams ShowScorePanel;
     public event UI_EventHandlerNoParams RestartUI;
+    public event UI_EventHandlerNoParams HideTimers;
     public event UI_EventHandlerWithParams UpdateTimeInterval;
     public event UI_EventHandlerWithParams UpdateError;
     public event UI_EventHandlerWithParams UpdateCountDownText;
@@ -48,7 +49,7 @@ public class GameController : MonoBehaviour
         Instance = this;
         challenges = new Challenge[2];
         timer = new Timer[playerCount];
-        challengeTypes = new string[] { "Infinite", "Random" };
+        challengeTypes = new string[] { "Infinite", "Random", "Kids" };
 
         for (int i = 0; i < timer.Length; i++)
             timer[i] = new Timer();       
@@ -63,7 +64,7 @@ public class GameController : MonoBehaviour
 
     public void RestartGame()
     {
-        isCountDownStarted = true;
+        isCountDownRunning = true;
         timeIntervalPopUp = false;
         countDown = defaultCountDown;
 
@@ -75,10 +76,11 @@ public class GameController : MonoBehaviour
         switch (challenges[0].Type)
         {
             case ChallengeType.Infinite:
-                SetChallengeSettings(ChallengeType.Infinite, 2000, 400, 3);
+            case ChallengeType.Kids:
+                SetChallengeSettings(challenges[0].Type, 2000, 500, 3);
                 break;
             case ChallengeType.Random:
-                SetChallengeSettings(ChallengeType.Random, -1, 400, -1, 1, 5);
+                SetChallengeSettings(challenges[0].Type, -1, 400, -1, 1, 5);
                 break;
             default:
                 break;
@@ -138,12 +140,10 @@ public class GameController : MonoBehaviour
             else
                 UpdateWinLoseText(++p1_sets, 0);
 
+            HideTimers();
             ShowScorePanel();
             isGameStarted = false;
 
-            // Wait until it is open. If we don't wait it closes panel
-            // immediately because it looks for nextRound button to decide.
-            // Check GameUIController: line 17
             StartCoroutine(
                 WaitForAnims(1.2f, () => {
                     UIController.Instance.nextRound = true;
@@ -154,7 +154,7 @@ public class GameController : MonoBehaviour
 
     private void Update()
     {
-        if (isCountDownStarted && countDown > 1f)
+        if (isCountDownRunning && countDown > 1f)
         {
             //show on screen with Text obj
             UpdateCountDownText((int)countDown, 0);
@@ -163,7 +163,7 @@ public class GameController : MonoBehaviour
             return;
         }
 
-        if (isCountDownStarted && countDown > 0f)
+        if (isCountDownRunning && countDown > 0f)
         {
             //write Go on text object
             UpdateCountDownText("GO", 0);
@@ -178,19 +178,24 @@ public class GameController : MonoBehaviour
             }
         }
 
-        if (isCountDownStarted && countDown <= 0f)
+        if (isCountDownRunning && countDown <= 0f)
         {
             for (int i = 0; i < playerCount; i++)
                 timer[i].Start();
 
-            isCountDownStarted = false;
+            isCountDownRunning = false;
             isGameStarted = true;
         }
 
-        if (UpdateTimeText != null && timeIntervalPopUp)
+        if (UpdateTimeText != null && isCountDownRunning == false)
         {
             for (int i = 0; i < playerCount; i++)
-                UpdateTimeText(timer[i].ElapsedTime, i);
+            {
+                if (challenges[0].Type == ChallengeType.Kids)
+                    UpdateTimeText(timer[i].LapTime, i);
+                else
+                    UpdateTimeText(timer[i].ElapsedTime, i);
+            }
         }
     }
 

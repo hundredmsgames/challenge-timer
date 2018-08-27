@@ -23,13 +23,14 @@ public class Timer
         startTime = CurrTime;
         timerStopped = false;
     }
-    //LT8H1Q3CAZPU
+
     public void Stop()
     {
         long deltaTime = CurrTime - startTime;
         elapsedTime += deltaTime;
         timerStopped = true;
     }
+
     public bool TimeOutCheck(float time)
     {
         timeOutValue += time;
@@ -38,6 +39,7 @@ public class Timer
 
         return false;
     }
+
     public int Lap()
     {
         long deltaTime = CurrTime - startTime;
@@ -62,6 +64,14 @@ public class Timer
             }
             else
                 return elapsedTime;
+        }
+    }
+
+    public long LapTime
+    {
+        get
+        {
+            return CurrTime - startTime;
         }
     }
 

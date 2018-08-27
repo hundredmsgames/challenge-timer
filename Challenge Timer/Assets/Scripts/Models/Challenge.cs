@@ -47,6 +47,7 @@ public struct Challenge
         switch (type)
         {
             case ChallengeType.Infinite:
+            case ChallengeType.Kids:
                 //if we are in infinite mode we will change interval every X lap
                 if (currLap != 0 && currLap % lapCountForIncrement == 0)
                 {
