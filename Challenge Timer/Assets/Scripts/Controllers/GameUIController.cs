@@ -5,19 +5,41 @@ using TMPro;
 
 public partial class UIController : MonoBehaviour
 {
+    // This variable ensures that lap button pressed
+    // one time to pass next round.
+    [NonSerialized]
+    public bool nextRound = false;
+
     // BUTTON EVENTS
     public void ButtonPressed_Lap(int playerIdx)
     {
-        gameController.Lap(playerIdx);
+        if(nextRound == true)
+        {
+            HideScorePanel();
+            nextRound = false;
+
+            StartCoroutine(
+                WaitForAnims(1.2f, () => {
+                    RestartUI();
+                    gameController.RestartGame();
+                })
+            );
+        }   
+        else
+        {
+            gameController.Lap(playerIdx);
+        }
     }
 
     public void RestartButtonPressed()
     {
         HideScorePanel();
+        nextRound = false;
 
         StartCoroutine(
-            WaitForAnims(1f, () => {
+            WaitForAnims(1.2f, () => {
                 RestartUI();
+                ResetScores();
                 gameController.StartGame();
             })
         );
@@ -26,12 +48,16 @@ public partial class UIController : MonoBehaviour
     public void ButtonPressed_MainMenu()
     {
         HideScorePanel();
-        
-        StartCoroutine(WaitForAnims(1.2f, () => {
-            RestartUI();
-            panel_Game.SetActive(false);
-            panel_Menu.SetActive(true);
-        }));
+        nextRound = false;
+
+        StartCoroutine(
+            WaitForAnims(1.2f, () => {
+                RestartUI();
+                ResetScores();
+                panel_Game.SetActive(false);
+                panel_Menu.SetActive(true);
+            })
+        );
     }
 
 
@@ -50,6 +76,19 @@ public partial class UIController : MonoBehaviour
         allTimersStarted = 0;
     }
 
+    private void ResetScores()
+    {
+        for (int i = 0; i < gameController.playerCount; i++)
+            text_scores[i].text = "0";
+       
+    }
+
+    private void ShowScorePanel()
+    {
+        // Show score panel
+        showScoreAnimator.SetBool("open", true);
+    }
+
     private void HideScorePanel()
     {
         // Hide score panel
@@ -58,7 +97,6 @@ public partial class UIController : MonoBehaviour
 
 
     // UPDATE METHODS
-
     private void UpdateFailedText(object value, int playerIdx)
     {
         failedTextObjects[playerIdx].SetActive(true);
@@ -78,8 +116,6 @@ public partial class UIController : MonoBehaviour
 
         text_losetext[otherPlayer].gameObject.SetActive(true);
         text_scores[playerIdx].text = value.ToString();
-
-        showScoreAnimator.SetBool("open", true);
     }
 
     private void UpdateCountDownText(object value, int playerIdx)

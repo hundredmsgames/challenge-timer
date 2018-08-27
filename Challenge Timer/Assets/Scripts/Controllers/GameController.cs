@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,13 +17,14 @@ public class GameController : MonoBehaviour
     private Timer[] timer;
     public string[] challengeTypes;
 
-    private bool isGameStarted;
-    private bool isCountDownStarted;
+    public bool isGameStarted;
+    public bool isCountDownStarted;
     private bool timeIntervalPopUp;
 
     public delegate void UI_EventHandler1();
     public delegate void UI_EventHandler2(object value, int playerIdx);
     public event UI_EventHandler1 HideScorePanel;
+    public event UI_EventHandler1 ShowScorePanel;
     public event UI_EventHandler1 RestartUI;
     public event UI_EventHandler2 UpdateTimeInterval;
     public event UI_EventHandler2 UpdateError;
@@ -118,23 +120,26 @@ public class GameController : MonoBehaviour
         {
             if (isGameStarted == false)
                 return;
+
             for (int i = 0; i < playerCount; i++)
-            {
                 timer[i].Stop();
-            }
-            isGameStarted = false;
-            if (p1_points == maxPoint)
-                p1_sets++;
-            else
-                p2_sets++;
             
-            UpdateWinLoseText(p1_sets, 0);
-            UpdateWinLoseText(p2_sets, 1);
+            if (p1_points == maxPoint)
+                UpdateWinLoseText(++p1_sets, 0);
+            else
+                UpdateWinLoseText(++p2_sets, 1);
 
-            //end game 
-            //show the failed text to appropriate player
-            //show the you won text to appropriate player
+            ShowScorePanel();
+            isGameStarted = false;
 
+            // Wait until it is open. If we don't wait it closes panel
+            // immediately because it looks for nextRound button to decide.
+            // Check GameUIController: line 17
+            StartCoroutine(
+                WaitForAnims(1.2f, () => {
+                    UIController.Instance.nextRound = true;
+                })
+            );
         }
     }
 
@@ -205,5 +210,13 @@ public class GameController : MonoBehaviour
             challenges[i].RandomLowerBound = rl;
             challenges[i].RandomUpperBound = ru;
         }
+    }
+
+    IEnumerator WaitForAnims(float time, Action func)
+    {
+        yield return new WaitForSeconds(time);
+
+        if (func != null)
+            func();
     }
 }

@@ -58,6 +58,7 @@ public partial class UIController : MonoBehaviour
         gameController.UpdateFailedText += UpdateFailedText;
         gameController.HideScorePanel += HideScorePanel;
         gameController.RestartUI += RestartUI;
+        gameController.ShowScorePanel += ShowScorePanel;
         FillPickerLists();
     }
 
