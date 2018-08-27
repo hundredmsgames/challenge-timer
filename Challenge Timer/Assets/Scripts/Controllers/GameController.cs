@@ -52,23 +52,16 @@ public class GameController : MonoBehaviour
 
     public void StartGame()
     {
-        isCountDownStarted = true;
-        RestartGame(true);
+        RestartGame();
         p1_sets = 0;
         p2_sets = 0;
     }
-    public void RestartGame(bool scorePanelClosed)
-    {
-        //if (scorePanelClosed == false)
-        //{
-        //    HideScorePanel();
-        //    return;
-        //}
 
+    public void RestartGame()
+    {
         isCountDownStarted = true;
         timeIntervalPopUp = false;
         countDown = defaultCountDown;
-        RestartUI();
 
         for (int i = 0; i < playerCount; i++)
         {
@@ -91,36 +84,9 @@ public class GameController : MonoBehaviour
         p2_points = 0;
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="timeInterval"></param>
-    /// <param name="error"></param>
-    /// <param name="lapCountForInc"></param>
-    /// <param name="rl">random lower limit</param>
-    /// <param name="ru">random upper limit</param>
-    public void SetChallengeSettings(ChallengeType type, int timeInterval, int error, int lapCountForInc, int rl = 0, int ru = 0)
-    {
-        for (int i = 0; i < playerCount; i++)
-        {
-            challenges[i] = new Challenge();
-            challenges[i].Type = type;
-
-            if (error != -1)
-                challenges[i].AbsoluteError = error;
-            if (timeInterval != -1)
-                challenges[i].StartInterval = challenges[i].TimeInterval = timeInterval;
-            if (lapCountForInc != -1)
-                challenges[i].LapCountForIncrement = lapCountForInc;
-
-            challenges[i].RandomLowerBound = rl;
-            challenges[i].RandomUpperBound = ru;
-        }
-    }
-
     // Player 1 -> Top
     // Player 2 -> Bottom
-    public void ButtonPressed_Lap(int playerIdx)
+    public void Lap(int playerIdx)
     {
         if (isGameStarted == true)
         {
@@ -146,7 +112,8 @@ public class GameController : MonoBehaviour
 
             // show what current interval is
             UpdateTimeInterval(challenges[playerIdx].GetNextTimeInterval(), playerIdx);
-        }   
+        }
+
         if(p1_points == maxPoint || p2_points == maxPoint)
         {
             if (isGameStarted == false)
@@ -157,9 +124,13 @@ public class GameController : MonoBehaviour
             }
             isGameStarted = false;
             if (p1_points == maxPoint)
-                UpdateWinLoseText(++p1_sets, 0);
+                p1_sets++;
             else
-                UpdateWinLoseText(++p2_sets, 1);
+                p2_sets++;
+            
+            UpdateWinLoseText(p1_sets, 0);
+            UpdateWinLoseText(p2_sets, 1);
+
             //end game 
             //show the failed text to appropriate player
             //show the you won text to appropriate player
@@ -206,6 +177,33 @@ public class GameController : MonoBehaviour
         {
             for (int i = 0; i < playerCount; i++)
                 UpdateTimeText(timer[i].ElapsedTime, i);
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="timeInterval"></param>
+    /// <param name="error"></param>
+    /// <param name="lapCountForInc"></param>
+    /// <param name="rl">random lower limit</param>
+    /// <param name="ru">random upper limit</param>
+    public void SetChallengeSettings(ChallengeType type, int timeInterval, int error, int lapCountForInc, int rl = 0, int ru = 0)
+    {
+        for (int i = 0; i < playerCount; i++)
+        {
+            challenges[i] = new Challenge();
+            challenges[i].Type = type;
+
+            if (error != -1)
+                challenges[i].AbsoluteError = error;
+            if (timeInterval != -1)
+                challenges[i].StartInterval = challenges[i].TimeInterval = timeInterval;
+            if (lapCountForInc != -1)
+                challenges[i].LapCountForIncrement = lapCountForInc;
+
+            challenges[i].RandomLowerBound = rl;
+            challenges[i].RandomUpperBound = ru;
         }
     }
 }
