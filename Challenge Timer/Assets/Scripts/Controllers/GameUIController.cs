@@ -36,7 +36,7 @@ public partial class UIController : MonoBehaviour
     {
         HideScorePanel();
         nextRound = false;
-
+        StopAllCoroutines();
         StartCoroutine(
             WaitForAnims(1.2f, () => {
                 RestartUI();
@@ -50,7 +50,7 @@ public partial class UIController : MonoBehaviour
     {
         HideScorePanel();
         nextRound = false;
-
+        StopAllCoroutines();
         StartCoroutine(
             WaitForAnims(1.2f, () => {
                 RestartUI();
