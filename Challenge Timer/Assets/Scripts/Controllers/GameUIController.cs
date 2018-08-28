@@ -120,13 +120,14 @@ public partial class UIController : MonoBehaviour
     private void UpdateFailedText(object value, int playerIdx)
     {
         failedTextObjects[playerIdx].SetActive(true);
+        failedTextObjects[playerIdx].GetComponentInChildren<TextMeshProUGUI>().text = StringLiterals.FailedObjectText;
     }
 
     private void UpdateWinLoseText(object value, int playerIdx)
     {
         int otherPlayer = (playerIdx + 1) % gameController.playerCount;
-        text_winlose[playerIdx].text = "You Won";
-        text_winlose[otherPlayer].text = "You Lose";
+        text_winlose[playerIdx].text = StringLiterals.WinObjectText;
+        text_winlose[otherPlayer].text = StringLiterals.LoseObjectText;
 
         for (int i = 0; i < gameController.playerCount; i++)
         {
@@ -135,6 +136,7 @@ public partial class UIController : MonoBehaviour
         }
 
         text_losetext[otherPlayer].gameObject.SetActive(true);
+        text_losetext[otherPlayer].text = StringLiterals.BetterLuckObjectText;
         text_scores[playerIdx].text = value.ToString();
     }
 
@@ -157,7 +159,7 @@ public partial class UIController : MonoBehaviour
         if (interval.text != timeInterval.ToString())
             interval.gameObject.SetActive(false);
 
-        interval.text = "Count up to " + ((int)timeInterval / 1000).ToString();
+        interval.text = StringLiterals.IntervalObjectText + " " + ((int)timeInterval / 1000).ToString();
         interval.gameObject.SetActive(true);
     }
 

@@ -44,6 +44,7 @@ public class GameController : MonoBehaviour
         if (Instance != null)
             return;
 
+        StringLiterals.language = Language.TURKISH;
         p1_points = p2_points = maxPoint;
         countDown = defaultCountDown;
         Instance = this;
@@ -167,8 +168,8 @@ public class GameController : MonoBehaviour
         if (isCountDownRunning && countDown > 0f)
         {
             //write Go on text object
-            UpdateCountDownText("GO", 0);
-            UpdateCountDownText("GO", 1);
+            UpdateCountDownText(StringLiterals.CountDownObjectText, 0);
+            UpdateCountDownText(StringLiterals.CountDownObjectText, 1);
             countDown -= Time.deltaTime;
 
             if (timeIntervalPopUp == false && countDown < 0.5f)

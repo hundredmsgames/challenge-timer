@@ -5,4 +5,9 @@ public enum ChallengeType : byte
     Random,
     Kids
 }
+public enum Language:byte
+{
+    TURKISH,
+    ENGLISH
+}
 
