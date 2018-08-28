@@ -29,6 +29,8 @@ public partial class UIController : MonoBehaviour
         else
         {
             gameController.Lap(playerIdx);
+            if (gameController.isGameStarted == true)
+                gameController.LapButtonPressed();
         }
     }
 
@@ -113,6 +115,14 @@ public partial class UIController : MonoBehaviour
         for (int i = 0; i < gameController.playerCount; i++)
         {
             text_times[i].color = new Color(text_times[i].color.r, text_times[i].color.g, text_times[i].color.b, 0);
+        }
+    }
+
+    private void HideIntervals()
+    {
+        for (int i = 0; i < gameController.playerCount; i++)
+        {
+            text_TimeIntervals[i].gameObject.SetActive(false);
         }
     }
 

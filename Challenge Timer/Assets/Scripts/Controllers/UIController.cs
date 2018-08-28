@@ -14,15 +14,13 @@ public partial class UIController : MonoBehaviour
 
    // Dictionary<string, Sprite> challengeTypeToSprite;
 
-    public GameObject pageMediumPrefab;
-    public GameObject pageSmallPrefab;
     public GameObject animatedTextPrefab;
 
-    public Transform challengeTypeContent;
     public Transform[] errorTextContainer;
     public GameObject panel_Menu;
     public GameObject panel_Game;
     public GameObject panel_gameEnd;
+    public GameObject panel_Settings;
     public GameObject[] winloseObjects;
     public GameObject[] failedTextObjects;
 
@@ -64,10 +62,10 @@ public partial class UIController : MonoBehaviour
         gameController.ShowScorePanel += ShowScorePanel;
         gameController.UpdateInfoSprites += UpdateInfoSprites;
         gameController.HideTimers += HideTimers;
-     
+        gameController.HideIntervals += HideIntervals;
     }
 
-    
+
 
     void LoadSprites()
     {
@@ -119,6 +117,16 @@ public partial class UIController : MonoBehaviour
         panel_Game.SetActive(true);
         RestartUI();
         gameController.StartGame();
+    }
+
+    public void ButtonPressed_Language(int language)
+    {
+        StringLiterals.language = (Language) language;
+    }
+
+    public void ButtonPressed_Settings()
+    {
+        panel_Settings.SetActive(!panel_Settings.activeSelf);
     }
 
     public void ButtonPressed_Github()

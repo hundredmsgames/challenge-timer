@@ -20,6 +20,7 @@ public class GameController : MonoBehaviour
     public bool isGameStarted;
     public bool isCountDownRunning;
     private bool timeIntervalPopUp;
+    private bool isLapButtonPressed;
 
     public delegate void UI_EventHandlerNoParams();
     public delegate void UI_EventHandlerWithParams(object value, int playerIdx);
@@ -27,6 +28,7 @@ public class GameController : MonoBehaviour
     public event UI_EventHandlerNoParams ShowScorePanel;
     public event UI_EventHandlerNoParams RestartUI;
     public event UI_EventHandlerNoParams HideTimers;
+    public event UI_EventHandlerNoParams HideIntervals;
     public event UI_EventHandlerWithParams UpdateTimeInterval;
     public event UI_EventHandlerWithParams UpdateError;
     public event UI_EventHandlerWithParams UpdateCountDownText;
@@ -38,13 +40,14 @@ public class GameController : MonoBehaviour
     float defaultCountDown = 4f;
     float countDown;
     public int playerCount = 2;
+    private int timeoutExtra = 2000;
 
     void Awake()
     {
         if (Instance != null)
             return;
 
-        StringLiterals.language = Language.TURKISH;
+        StringLiterals.language = Language.ENGLISH;
         p1_points = p2_points = maxPoint;
         countDown = defaultCountDown;
         Instance = this;
@@ -68,6 +71,9 @@ public class GameController : MonoBehaviour
         isCountDownRunning = true;
         timeIntervalPopUp = false;
         countDown = defaultCountDown;
+        isLapButtonPressed = false;
+        p1_points = maxPoint;
+        p2_points = maxPoint;
 
         for (int i = 0; i < playerCount; i++)
         {
@@ -85,16 +91,15 @@ public class GameController : MonoBehaviour
                 break;
             default:
                 break;
-        }
-
-        p1_points = maxPoint;
-        p2_points = maxPoint;
+        }  
     }
 
     // Player 1 -> Top
     // Player 2 -> Bottom
     public void Lap(int playerIdx)
     {
+        int failedPlayerIdx = -1;
+
         if (isGameStarted == true)
         {
             int currInterval = challenges[playerIdx].TimeInterval;
@@ -103,21 +108,18 @@ public class GameController : MonoBehaviour
 
             if (Mathf.Abs(lapTime - currInterval) > absError)
             {
-                //failed
-                UpdateFailedText("", playerIdx);
-
                 if (playerIdx == 0)
                 {
                     p1_points--;
                     UpdateInfoSprites(p1_points, 0);
+                    failedPlayerIdx = 0;
                 }
                 else
                 {
                     p2_points--;
                     UpdateInfoSprites(p2_points, 1);
+                    failedPlayerIdx = 1;
                 }
-                //update appropriate players game stat object(UPDATE SPRITE??)
-
             }
             else
             {
@@ -126,32 +128,49 @@ public class GameController : MonoBehaviour
 
             // show what current interval is
             UpdateTimeInterval(challenges[playerIdx].GetNextTimeInterval(), playerIdx);
-        }
 
-        if (p1_points == 0 || p2_points == 0)
-        {
-            if (isGameStarted == false)
-                return;
 
-            for (int i = 0; i < playerCount; i++)
-                timer[i].Stop();
-
-            if (p1_points == 0)
-                UpdateWinLoseText(++p2_sets, 1);
-            else
-                UpdateWinLoseText(++p1_sets, 0);
-
-            HideTimers();
-            ShowScorePanel();
-            isGameStarted = false;
-
-            StartCoroutine(
-                WaitForAnims(1.2f, () =>
+            if (p1_points == 0 || p2_points == 0)
+            {
+                if (isLapButtonPressed == false)
                 {
-                    UIController.Instance.nextRound = true;
-                })
-            );
+                    UpdateInfoSprites(0, 0);
+                    UpdateInfoSprites(0, 1);
+                    failedPlayerIdx = 2;
+                }
+                else if (p1_points == 0)
+                    UpdateWinLoseText(++p2_sets, 1);
+                else
+                    UpdateWinLoseText(++p1_sets, 0);
+
+
+                HideTimers();
+                HideIntervals();
+                ShowScorePanel();
+                isGameStarted = false;
+
+                StartCoroutine(
+                    WaitForAnims(1.2f, () =>
+                    {
+                        UIController.Instance.nextRound = true;
+                    })
+                );
+            }
+
+            //failed
+            if(failedPlayerIdx == 2)
+            {
+                UpdateFailedText("", 0);
+                UpdateFailedText("", 1);
+            }
+            else if(failedPlayerIdx != -1)
+                UpdateFailedText("", playerIdx);
         }
+    }
+
+    public void LapButtonPressed()
+    {
+        isLapButtonPressed = true;
     }
 
     private void Update()
@@ -189,7 +208,7 @@ public class GameController : MonoBehaviour
             isGameStarted = true;
         }
 
-        if (UpdateTimeText != null && isCountDownRunning == false)
+        if (UpdateTimeText != null && isCountDownRunning == false && isGameStarted == true)
         {
             for (int i = 0; i < playerCount; i++)
             {
@@ -198,14 +217,13 @@ public class GameController : MonoBehaviour
                 else
                     UpdateTimeText(timer[i].ElapsedTime, i);
             }
-
-
         }
+
         if (isGameStarted && isCountDownRunning == false)
         {
             for (int i = 0; i < playerCount; i++)
             {
-                if (timer[i].LapTime > challenges[i].TimeInterval + challenges[i].AbsoluteError)
+                if (timer[i].LapTime > challenges[i].TimeInterval + timeoutExtra)
                 {
                     Lap(i);
                 }

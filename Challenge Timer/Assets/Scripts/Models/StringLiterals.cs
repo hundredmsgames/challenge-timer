@@ -45,7 +45,7 @@ public static class StringLiterals
             switch (language)
             {
                 case Language.TURKISH:
-                    return "Başaramadın!";
+                    return "Kaybettin!";
                 case Language.ENGLISH:
                     return "You Lose!";
                 default:
@@ -76,9 +76,9 @@ public static class StringLiterals
             switch (language)
             {
                 case Language.TURKISH:
-                    return "Hatalı";
+                    return "Kaçırdın";
                 case Language.ENGLISH:
-                    return "Failed";
+                    return "You Missed";
                 default:
                     return "";
             }
