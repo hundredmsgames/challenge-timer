@@ -1,5 +1,5 @@
 ﻿using System;
-using UnityEngine.UI.Extensions;
+
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -64,7 +64,7 @@ public partial class UIController : MonoBehaviour
         gameController.ShowScorePanel += ShowScorePanel;
         gameController.UpdateInfoSprites += UpdateInfoSprites;
         gameController.HideTimers += HideTimers;
-        FillPickerLists();
+     
     }
 
     
@@ -79,36 +79,9 @@ public partial class UIController : MonoBehaviour
         }
     }
 
-    private void FillPickerLists()
-    {
-        // We don't use this. VerticalScrollSnap.RemoveAllChildren need it.
-        GameObject[] removed;
+   
 
-        // Fill challenge types.
-        string[] challengeTypes = gameController.challengeTypes;
-        VerticalScrollSnap challengeTypeSnap = challengeTypeContent.parent.gameObject.GetComponent<VerticalScrollSnap>();
-        challengeTypeSnap.RemoveAllChildren(out removed);
-        foreach (GameObject go in removed)
-            Destroy(go);
-
-        for (int i = 0; i < challengeTypes.Length; i++)
-        {
-            GameObject page = Instantiate(pageMediumPrefab, challengeTypeContent);
-            page.GetComponentInChildren<TextMeshProUGUI>().text = challengeTypes[i];
-
-            // There was a bug before when we use i variable in delegate.
-            // I don't know if it's still exist. 
-            int index = i;
-            page.GetComponent<Button>().onClick.AddListener(delegate
-            {
-                challengeTypeSnap.ChangePage(index);
-                challengeTypeContent.parent.parent.gameObject.GetComponent<ScrollView>().ToggleListSize();
-            });
-        }
-        challengeTypeSnap.UpdateLayout();
-    }
-
-    public void ScrollViewChallengeType(int selectedPage)
+    public void ChallengeTypeSelectorButtons_OnClick(int selectedPage)
     {
         for (int i = 0; i < gameController.playerCount; i++)
         {
@@ -128,6 +101,7 @@ public partial class UIController : MonoBehaviour
             }
         }
     }
+
 
     private void UpdateInfoSprites(object value, int playerIdx)
     {

@@ -52,7 +52,7 @@ public class GameController : MonoBehaviour
         challengeTypes = new string[] { "Infinite", "Random", "Kids" };
 
         for (int i = 0; i < timer.Length; i++)
-            timer[i] = new Timer();       
+            timer[i] = new Timer();
     }
 
     public void StartGame()
@@ -85,7 +85,7 @@ public class GameController : MonoBehaviour
             default:
                 break;
         }
-        
+
         p1_points = maxPoint;
         p2_points = maxPoint;
     }
@@ -116,7 +116,7 @@ public class GameController : MonoBehaviour
                     UpdateInfoSprites(p2_points, 1);
                 }
                 //update appropriate players game stat object(UPDATE SPRITE??)
-                
+
             }
             else
             {
@@ -127,14 +127,14 @@ public class GameController : MonoBehaviour
             UpdateTimeInterval(challenges[playerIdx].GetNextTimeInterval(), playerIdx);
         }
 
-        if(p1_points == 0 || p2_points == 0)
+        if (p1_points == 0 || p2_points == 0)
         {
             if (isGameStarted == false)
                 return;
 
             for (int i = 0; i < playerCount; i++)
                 timer[i].Stop();
-            
+
             if (p1_points == 0)
                 UpdateWinLoseText(++p2_sets, 1);
             else
@@ -145,7 +145,8 @@ public class GameController : MonoBehaviour
             isGameStarted = false;
 
             StartCoroutine(
-                WaitForAnims(1.2f, () => {
+                WaitForAnims(1.2f, () =>
+                {
                     UIController.Instance.nextRound = true;
                 })
             );
@@ -195,6 +196,18 @@ public class GameController : MonoBehaviour
                     UpdateTimeText(timer[i].LapTime, i);
                 else
                     UpdateTimeText(timer[i].ElapsedTime, i);
+            }
+
+
+        }
+        if (isGameStarted && isCountDownRunning == false)
+        {
+            for (int i = 0; i < playerCount; i++)
+            {
+                if (timer[i].LapTime > challenges[i].TimeInterval + challenges[i].AbsoluteError)
+                {
+                    Lap(i);
+                }
             }
         }
     }
