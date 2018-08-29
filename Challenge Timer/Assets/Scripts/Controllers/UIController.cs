@@ -12,18 +12,17 @@ public partial class UIController : MonoBehaviour
     private GameController gameController;
     public Animator showScoreAnimator;
 
-   // Dictionary<string, Sprite> challengeTypeToSprite;
-
     public GameObject animatedTextPrefab;
 
-    public Transform[] errorTextContainer;
     public GameObject panel_Menu;
     public GameObject panel_Game;
-    public GameObject panel_gameEnd;
+    public GameObject panel_Scores;
     public GameObject panel_Settings;
+    public GameObject panel_Languages;
     public GameObject[] winloseObjects;
     public GameObject[] failedTextObjects;
 
+    public Transform[] errorTextContainer;
     public TextMeshProUGUI[] text_TimeIntervals;
     public TextMeshProUGUI[] text_Countdowns;
     public TextMeshProUGUI[] text_times;
@@ -33,9 +32,11 @@ public partial class UIController : MonoBehaviour
 
     public GameObject[] spriteObjectContainers;
     Dictionary<string, Sprite> nameToSpriteMap;
+
     // We should reset this variable when the game is restarted.
     int allTimersStarted;
     bool panelshow = false;
+
     /*
      Game Screen Color
      FF006C => pinkish
@@ -65,8 +66,6 @@ public partial class UIController : MonoBehaviour
         gameController.HideIntervals += HideIntervals;
     }
 
-
-
     void LoadSprites()
     {
         nameToSpriteMap = new Dictionary<string, Sprite>();
@@ -76,8 +75,6 @@ public partial class UIController : MonoBehaviour
             nameToSpriteMap.Add(sprites[i].name, sprites[i]);
         }
     }
-
-   
 
     public void ChallengeTypeSelectorButtons_OnClick(int selectedPage)
     {
@@ -100,7 +97,6 @@ public partial class UIController : MonoBehaviour
         }
     }
 
-
     private void UpdateInfoSprites(object value, int playerIdx)
     {
         int index = (int)value;
@@ -120,14 +116,20 @@ public partial class UIController : MonoBehaviour
         panelshow = false;
     }
 
-    public void ButtonPressed_Language(int language)
+    public void ButtonPressed_ShowLanguage()
+    {
+        panel_Languages.GetComponent<Animator>().SetBool("open", true);
+    }
+
+    public void ButtonPressed_SelectLanguage(int language)
     {
         StringLiterals.language = (Language) language;
+        panel_Languages.GetComponent<Animator>().SetBool("open", false);
+
     }
 
     public void ButtonPressed_Settings()
-    {
-       
+    {    
         panelshow = !panelshow;
         panel_Settings.GetComponent<Animator>().SetBool("panelShow", panelshow);
     }
