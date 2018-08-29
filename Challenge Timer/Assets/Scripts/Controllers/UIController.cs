@@ -35,7 +35,7 @@ public partial class UIController : MonoBehaviour
     Dictionary<string, Sprite> nameToSpriteMap;
     // We should reset this variable when the game is restarted.
     int allTimersStarted;
-
+    bool panelshow = false;
     /*
      Game Screen Color
      FF006C => pinkish
@@ -117,6 +117,7 @@ public partial class UIController : MonoBehaviour
         panel_Game.SetActive(true);
         RestartUI();
         gameController.StartGame();
+        panelshow = false;
     }
 
     public void ButtonPressed_Language(int language)
@@ -126,7 +127,9 @@ public partial class UIController : MonoBehaviour
 
     public void ButtonPressed_Settings()
     {
-        panel_Settings.SetActive(!panel_Settings.activeSelf);
+       
+        panelshow = !panelshow;
+        panel_Settings.GetComponent<Animator>().SetBool("panelShow", panelshow);
     }
 
     public void ButtonPressed_Github()
