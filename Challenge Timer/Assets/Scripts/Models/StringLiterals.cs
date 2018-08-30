@@ -260,7 +260,8 @@ public static class StringLiterals
                             "Yarım saniye hata yapma şansınız var. İçinizden saymanız gereken sürenin zamanla " +
                             "artacağına dikkat edin.";
                 case Language.ENGLISH:
-                    return "tell about infinite";
+                    return "This challenge designed for no limits about time and you can go as far as you can."+
+                        "You have a chance to make mistake half a second.Be careful time will be increasing that you have to follow during the game.";
                 default:
                     return "";
             }
