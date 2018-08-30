@@ -18,6 +18,7 @@ public partial class UIController : MonoBehaviour
     public GameObject panel_Game;
     public GameObject panel_Scores;
     public GameObject panel_Settings;
+    public GameObject panel_Credits;
     public GameObject panel_Languages;
     public GameObject[] winloseObjects;
     public GameObject[] failedTextObjects;
@@ -32,6 +33,16 @@ public partial class UIController : MonoBehaviour
 
     public GameObject[] spriteObjectContainers;
     Dictionary<string, Sprite> nameToSpriteMap;
+
+    public TextMeshProUGUI languageText;
+    public TextMeshProUGUI CreditsText;
+    public TextMeshProUGUI CreditsCoderText;
+    public TextMeshProUGUI CreditsDesignerText;
+    public TextMeshProUGUI CreditsGraphicsText;
+
+    public TextMeshProUGUI[] InfoHeaderText;
+    public TextMeshProUGUI[] InfoContentText;
+
 
     // We should reset this variable when the game is restarted.
     int allTimersStarted;
@@ -50,6 +61,15 @@ public partial class UIController : MonoBehaviour
             return;
 
         LoadSprites();
+        if (PlayerPrefs.HasKey("lang"))
+        {
+            int lan = PlayerPrefs.GetInt("lang");
+            ButtonPressed_SelectLanguage(lan);
+        }
+        else
+        {
+            PlayerPrefs.SetInt("lang", 1);
+        }
         Instance = this;
         gameController = GameController.Instance;
         gameController.UpdateTimeInterval += UpdateTimeInterval;
@@ -75,7 +95,60 @@ public partial class UIController : MonoBehaviour
             nameToSpriteMap.Add(sprites[i].name, sprites[i]);
         }
     }
+    public void INFO_TOP(int type)
+    {
+        ChallengeType challengeType = (ChallengeType)(Enum.Parse(typeof(ChallengeType), gameController.challengeTypes[type]));
+        string header = "";
+        string content = "";
+        switch (challengeType)
+        {
+            case ChallengeType.Infinite:
+                header = StringLiterals.InfoHeaderInfinite;
+                content = StringLiterals.InfoContentInfinite;
+                break;
+            case ChallengeType.Kids:
 
+                header = StringLiterals.InfoHeaderKids;
+                content = StringLiterals.InfoContentKids;
+                break;
+            case ChallengeType.Random:
+
+                header = StringLiterals.InfoHeaderRandom;
+                content = StringLiterals.InfoContentRandom;
+                break;
+            default:
+                break;
+        }
+        InfoHeaderText[0].text = header;
+        InfoContentText[0].text = content;
+    }
+    public void INFO_BOTTOM(int type)
+    {
+        ChallengeType challengeType = (ChallengeType)(Enum.Parse(typeof(ChallengeType), gameController.challengeTypes[type]));
+        string header = "";
+        string content = "";
+        switch (challengeType)
+        {
+            case ChallengeType.Infinite:
+                header = StringLiterals.InfoHeaderInfinite;
+                content = StringLiterals.InfoContentInfinite;
+                break;
+            case ChallengeType.Kids:
+
+                header = StringLiterals.InfoHeaderKids;
+                content = StringLiterals.InfoContentKids;
+                break;
+            case ChallengeType.Random:
+
+                header = StringLiterals.InfoHeaderRandom;
+                content = StringLiterals.InfoContentRandom;
+                break;
+            default:
+                break;
+        }
+        InfoHeaderText[1].text = header;
+        InfoContentText[1].text = content;
+    }
     public void ChallengeTypeSelectorButtons_OnClick(int selectedPage)
     {
         for (int i = 0; i < gameController.playerCount; i++)
@@ -95,6 +168,29 @@ public partial class UIController : MonoBehaviour
                     break;
             }
         }
+        //Color color = new Color();
+        //if (selectedPage == 0)
+        //{
+        //    color.r = 0;
+        //    color.g = 167;
+        //    color.b = 204;
+        //    color.a = 1;
+        //}
+        //else if(selectedPage == 1)
+        //{
+        //    color.r = 249;
+        //    color.g = 119;
+        //    color.b = 154;
+        //    color.a = 1;
+        //}
+        //else if (selectedPage == 2)
+        //{
+        //    color.r = 194;
+        //    color.g = 169;
+        //    color.b = 149;
+        //    color.a = 1;
+        //}
+        //panel_Menu.GetComponent<Image>().color = color;
     }
 
     private void UpdateInfoSprites(object value, int playerIdx)
@@ -123,13 +219,28 @@ public partial class UIController : MonoBehaviour
 
     public void ButtonPressed_SelectLanguage(int language)
     {
-        StringLiterals.language = (Language) language;
+        StringLiterals.language = (Language)language;
         panel_Languages.GetComponent<Animator>().SetBool("open", false);
 
+        SetTextsForLanguages();
+        PlayerPrefs.SetInt("lang", language);
+    }
+    public void ButtonPressed_Credits()
+    {
+        panel_Credits.SetActive(!panel_Credits.activeSelf);
+
+    }
+    private void SetTextsForLanguages()
+    {
+        CreditsText.text = StringLiterals.CreditsButtonText;
+        languageText.text = StringLiterals.LanguagesButtonText;
+        CreditsCoderText.text = StringLiterals.CreditsCodersButtonText;
+        CreditsDesignerText.text = StringLiterals.CreditsDesignersButtonText;
+        CreditsGraphicsText.text = StringLiterals.CreditsGraphicsButtonText;
     }
 
     public void ButtonPressed_Settings()
-    {    
+    {
         panelshow = !panelshow;
         panel_Settings.GetComponent<Animator>().SetBool("panelShow", panelshow);
     }
