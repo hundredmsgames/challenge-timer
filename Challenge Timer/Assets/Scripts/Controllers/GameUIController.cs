@@ -6,45 +6,23 @@ using UnityEngine.UI;
 
 public partial class UIController : MonoBehaviour
 {
-    // This variable ensures that lap button pressed
-    // one time to pass next round.
-    [NonSerialized]
-    public bool nextRound = false;
-
     // BUTTON EVENTS
     public void ButtonPressed_Lap(int playerIdx)
     {
-        if(nextRound == true)
-        {
-            HideScorePanel();
-            nextRound = false;
-
-            StartCoroutine(
-                WaitForAnims(1.2f, () => {
-                    RestartUI();
-                    gameController.RestartGame();
-                })
-            );
-        }   
-        else
-        {
-            gameController.Lap(playerIdx);
-            if (gameController.isGameStarted == true)
-                gameController.LapButtonPressed();
-        }
+        gameController.Lap(playerIdx);
+        if (gameController.isGameStarted == true)
+            gameController.LapButtonPressed();      
     }
 
-    public void RestartButtonPressed()
+    public void ButtonPressed_NextRound()
     {
         HideScorePanel();
-        nextRound = false;
 
         StopAllCoroutines();
         StartCoroutine(
             WaitForAnims(1.2f, () => {
                 RestartUI();
-                ResetScores();
-                gameController.StartGame();
+                gameController.RestartGame();
             })
         );
     }
@@ -52,7 +30,6 @@ public partial class UIController : MonoBehaviour
     public void ButtonPressed_MainMenu()
     {
         HideScorePanel();
-        nextRound = false;
 
         StopAllCoroutines();
         StartCoroutine(

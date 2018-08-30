@@ -155,9 +155,29 @@ public static class StringLiterals
             switch (language)
             {
                 case Language.TURKISH:
-                    return "Grafikerler";
+                    return "Grafiker";
                 case Language.ENGLISH:
-                    return "Graphics";
+                    return "Graphicer";
+                default:
+                    return "";
+            }
+
+        }
+    }
+    static public string CreditsJoinUsText
+    {
+        get
+        {
+            switch (language)
+            {
+                case Language.TURKISH:
+                    return "Eğer bize katılmak isterseniz lütfen iletişime geçin.\n" + 
+                           "100msgamestudio@gmail.com\n\n" +
+                           "Umarım eğlendiniz :)";
+                case Language.ENGLISH:
+                    return "If you want to join us, please contact.\n" + 
+                           "100msgamestudio@gmail.com\n\n" +
+                           "Hope you enjoyed :)";
                 default:
                     return "";
             }

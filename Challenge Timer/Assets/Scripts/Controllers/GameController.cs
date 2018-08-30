@@ -143,18 +143,10 @@ public class GameController : MonoBehaviour
                 else
                     UpdateWinLoseText(++p1_sets, 0);
 
-
                 HideTimers();
                 HideIntervals();
                 ShowScorePanel();
                 isGameStarted = false;
-
-                StartCoroutine(
-                    WaitForAnims(1.2f, () =>
-                    {
-                        UIController.Instance.nextRound = true;
-                    })
-                );
             }
 
             //failed

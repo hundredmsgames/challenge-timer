@@ -20,6 +20,7 @@ public partial class UIController : MonoBehaviour
     public GameObject panel_Settings;
     public GameObject panel_Credits;
     public GameObject panel_Languages;
+    public GameObject[] panel_GameInfos;
     public GameObject[] winloseObjects;
     public GameObject[] failedTextObjects;
 
@@ -39,6 +40,8 @@ public partial class UIController : MonoBehaviour
     public TextMeshProUGUI CreditsCoderText;
     public TextMeshProUGUI CreditsDesignerText;
     public TextMeshProUGUI CreditsGraphicsText;
+    public TextMeshProUGUI CreditsJoinUsText;
+
 
     public TextMeshProUGUI[] InfoHeaderText;
     public TextMeshProUGUI[] InfoContentText;
@@ -61,6 +64,7 @@ public partial class UIController : MonoBehaviour
             return;
 
         LoadSprites();
+
         if (PlayerPrefs.HasKey("lang"))
         {
             int lan = PlayerPrefs.GetInt("lang");
@@ -70,6 +74,7 @@ public partial class UIController : MonoBehaviour
         {
             PlayerPrefs.SetInt("lang", 1);
         }
+
         Instance = this;
         gameController = GameController.Instance;
         gameController.UpdateTimeInterval += UpdateTimeInterval;
@@ -84,6 +89,9 @@ public partial class UIController : MonoBehaviour
         gameController.UpdateInfoSprites += UpdateInfoSprites;
         gameController.HideTimers += HideTimers;
         gameController.HideIntervals += HideIntervals;
+
+        INFO_TOP(0);
+        INFO_BOTTOM(0);
     }
 
     void LoadSprites()
@@ -95,6 +103,7 @@ public partial class UIController : MonoBehaviour
             nameToSpriteMap.Add(sprites[i].name, sprites[i]);
         }
     }
+
     public void INFO_TOP(int type)
     {
         ChallengeType challengeType = (ChallengeType)(Enum.Parse(typeof(ChallengeType), gameController.challengeTypes[type]));
@@ -149,6 +158,7 @@ public partial class UIController : MonoBehaviour
         InfoHeaderText[1].text = header;
         InfoContentText[1].text = content;
     }
+
     public void ChallengeTypeSelectorButtons_OnClick(int selectedPage)
     {
         for (int i = 0; i < gameController.playerCount; i++)
@@ -208,8 +218,28 @@ public partial class UIController : MonoBehaviour
         panel_Menu.SetActive(false);
         panel_Game.SetActive(true);
         RestartUI();
-        gameController.StartGame();
         panelshow = false;
+
+        if (PlayerPrefs.HasKey("game_info") == false)
+        {
+            PlayerPrefs.SetInt("game_info", 1);
+            foreach (GameObject go in panel_GameInfos)
+                go.SetActive(true);
+        }
+        else
+        {
+            gameController.StartGame();
+        }
+    }
+
+    private int gameInfoClosedCounter;
+    public void ButtonPressed_GameInfoClosed(int playerIdx)
+    {
+        gameInfoClosedCounter++;
+        panel_GameInfos[playerIdx].SetActive(false);
+
+        if (gameInfoClosedCounter == 2)
+            gameController.StartGame();
     }
 
     public void ButtonPressed_ShowLanguage()
@@ -237,12 +267,20 @@ public partial class UIController : MonoBehaviour
         CreditsCoderText.text = StringLiterals.CreditsCodersButtonText;
         CreditsDesignerText.text = StringLiterals.CreditsDesignersButtonText;
         CreditsGraphicsText.text = StringLiterals.CreditsGraphicsButtonText;
+        CreditsJoinUsText.text = StringLiterals.CreditsJoinUsText;
     }
 
     public void ButtonPressed_Settings()
     {
         panelshow = !panelshow;
         panel_Settings.GetComponent<Animator>().SetBool("panelShow", panelshow);
+        
+        // If Settings Panel closed, close language and credits panel too.
+        if(panelshow == false)
+        {
+            panel_Languages.GetComponent<Animator>().SetBool("open", false);
+            panel_Credits.SetActive(false);
+        }
     }
 
     public void ButtonPressed_Github()
