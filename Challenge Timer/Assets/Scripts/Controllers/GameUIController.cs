@@ -42,6 +42,15 @@ public partial class UIController : MonoBehaviour
         );
     }
 
+    public void ButtonPressed_GameInfoClosed(int playerIdx)
+    {
+        gameInfoClosedCounter++;
+        panel_GameInfos[playerIdx].SetActive(false);
+
+        if (gameInfoClosedCounter == 2)
+            gameController.StartGame();
+    }
+
 
     // RESTART UI
     private void RestartUI()

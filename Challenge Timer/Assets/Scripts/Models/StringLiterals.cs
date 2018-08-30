@@ -116,6 +116,22 @@ public static class StringLiterals
 
         }
     }
+    static public string HowToPlayText
+    {
+        get
+        {
+            switch (language)
+            {
+                case Language.TURKISH:
+                    return "Nasıl Oynanır";
+                case Language.ENGLISH:
+                    return "How To Play";
+                default:
+                    return "";
+            }
+
+        }
+    }
     static public string CreditsCodersButtonText
     {
         get
@@ -171,7 +187,7 @@ public static class StringLiterals
             switch (language)
             {
                 case Language.TURKISH:
-                    return "Eğer bize katılmak isterseniz lütfen iletişime geçin.\n" + 
+                    return "Eğer bize katılmak istiyorsanız, iletişime geçin.\n" + 
                            "100msgamestudio@gmail.com\n\n" +
                            "Umarım eğlendiniz :)";
                 case Language.ENGLISH:
@@ -184,6 +200,7 @@ public static class StringLiterals
 
         }
     }
+
     static public string InfoHeaderRandom
     {
         get
@@ -191,7 +208,7 @@ public static class StringLiterals
             switch (language)
             {
                 case Language.TURKISH:
-                    return "Rasgele";
+                    return "Rastgele";
                 case Language.ENGLISH:
                     return "Random";
                 default:
@@ -239,7 +256,9 @@ public static class StringLiterals
             switch (language)
             {
                 case Language.TURKISH:
-                    return "sonsuzu anlat";
+                    return "Bu challenge herhangi bir sınıra sahip olmadan gidebilidiğiniz kadar gidebilmeniz için tasarlandı. " +
+                            "Yarım saniye hata yapma şansınız var. İçinizden saymanız gereken sürenin zamanla " +
+                            "artacağına dikkat edin.";
                 case Language.ENGLISH:
                     return "tell about infinite";
                 default:
@@ -289,7 +308,7 @@ public static class StringLiterals
                 case Language.TURKISH:
                     return "Dil";
                 case Language.ENGLISH:
-                    return "Languages";
+                    return "Language";
                 default:
                     return "";
             }

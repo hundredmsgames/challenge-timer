@@ -19,6 +19,7 @@ public partial class UIController : MonoBehaviour
     public GameObject panel_Scores;
     public GameObject panel_Settings;
     public GameObject panel_Credits;
+    public GameObject panel_HowToPlay;
     public GameObject panel_Languages;
     public GameObject[] panel_GameInfos;
     public GameObject[] winloseObjects;
@@ -41,15 +42,17 @@ public partial class UIController : MonoBehaviour
     public TextMeshProUGUI CreditsDesignerText;
     public TextMeshProUGUI CreditsGraphicsText;
     public TextMeshProUGUI CreditsJoinUsText;
-
+    public TextMeshProUGUI HowToPlayText;
 
     public TextMeshProUGUI[] InfoHeaderText;
     public TextMeshProUGUI[] InfoContentText;
-
+    public TextMeshProUGUI InfoHeaderMainMenuText;
+    public TextMeshProUGUI InfoContentMainMenuText;
 
     // We should reset this variable when the game is restarted.
-    int allTimersStarted;
-    bool panelshow = false;
+    private int allTimersStarted;
+    private int gameInfoClosedCounter;
+    private bool settingsPanelShow = false;
 
     /*
      Game Screen Color
@@ -63,6 +66,8 @@ public partial class UIController : MonoBehaviour
         if (Instance != null)
             return;
 
+        Instance = this;
+        gameController = GameController.Instance;
         LoadSprites();
 
         if (PlayerPrefs.HasKey("lang"))
@@ -73,10 +78,9 @@ public partial class UIController : MonoBehaviour
         else
         {
             PlayerPrefs.SetInt("lang", 1);
+            ButtonPressed_SelectLanguage(1);
         }
 
-        Instance = this;
-        gameController = GameController.Instance;
         gameController.UpdateTimeInterval += UpdateTimeInterval;
         gameController.UpdateError += UpdateError;
         gameController.UpdateCountDownText += UpdateCountDownText;
@@ -128,9 +132,19 @@ public partial class UIController : MonoBehaviour
             default:
                 break;
         }
-        InfoHeaderText[0].text = header;
-        InfoContentText[0].text = content;
+
+        if(panel_Menu.activeSelf == true)
+        {
+            InfoHeaderMainMenuText.text = header;
+            InfoContentMainMenuText.text = content;
+        }
+        else
+        {
+            InfoHeaderText[0].text = header;
+            InfoContentText[0].text = content;
+        }
     }
+
     public void INFO_BOTTOM(int type)
     {
         ChallengeType challengeType = (ChallengeType)(Enum.Parse(typeof(ChallengeType), gameController.challengeTypes[type]));
@@ -155,8 +169,17 @@ public partial class UIController : MonoBehaviour
             default:
                 break;
         }
-        InfoHeaderText[1].text = header;
-        InfoContentText[1].text = content;
+
+        if (panel_Menu.activeSelf == true)
+        {
+            InfoHeaderMainMenuText.text = header;
+            InfoContentMainMenuText.text = content;
+        }
+        else
+        {
+            InfoHeaderText[1].text = header;
+            InfoContentText[1].text = content;
+        }
     }
 
     public void ChallengeTypeSelectorButtons_OnClick(int selectedPage)
@@ -218,7 +241,12 @@ public partial class UIController : MonoBehaviour
         panel_Menu.SetActive(false);
         panel_Game.SetActive(true);
         RestartUI();
-        panelshow = false;
+        settingsPanelShow = false;
+
+        // We call this two after setting menu panel as active "false"
+        // It's important.
+        INFO_TOP(0);
+        INFO_BOTTOM(0);
 
         if (PlayerPrefs.HasKey("game_info") == false)
         {
@@ -232,16 +260,6 @@ public partial class UIController : MonoBehaviour
         }
     }
 
-    private int gameInfoClosedCounter;
-    public void ButtonPressed_GameInfoClosed(int playerIdx)
-    {
-        gameInfoClosedCounter++;
-        panel_GameInfos[playerIdx].SetActive(false);
-
-        if (gameInfoClosedCounter == 2)
-            gameController.StartGame();
-    }
-
     public void ButtonPressed_ShowLanguage()
     {
         panel_Languages.GetComponent<Animator>().SetBool("open", true);
@@ -252,14 +270,12 @@ public partial class UIController : MonoBehaviour
         StringLiterals.language = (Language)language;
         panel_Languages.GetComponent<Animator>().SetBool("open", false);
 
+        INFO_TOP(0);
+        INFO_BOTTOM(0);
         SetTextsForLanguages();
         PlayerPrefs.SetInt("lang", language);
     }
-    public void ButtonPressed_Credits()
-    {
-        panel_Credits.SetActive(!panel_Credits.activeSelf);
-
-    }
+    
     private void SetTextsForLanguages()
     {
         CreditsText.text = StringLiterals.CreditsButtonText;
@@ -268,19 +284,34 @@ public partial class UIController : MonoBehaviour
         CreditsDesignerText.text = StringLiterals.CreditsDesignersButtonText;
         CreditsGraphicsText.text = StringLiterals.CreditsGraphicsButtonText;
         CreditsJoinUsText.text = StringLiterals.CreditsJoinUsText;
+        HowToPlayText.text = StringLiterals.HowToPlayText;
     }
 
     public void ButtonPressed_Settings()
     {
-        panelshow = !panelshow;
-        panel_Settings.GetComponent<Animator>().SetBool("panelShow", panelshow);
+        settingsPanelShow = !settingsPanelShow;
+        panel_Settings.GetComponent<Animator>().SetBool("panelShow", settingsPanelShow);
         
-        // If Settings Panel closed, close language and credits panel too.
-        if(panelshow == false)
+        // If Settings Panel closed, close all panels too.
+        if(settingsPanelShow == false)
         {
             panel_Languages.GetComponent<Animator>().SetBool("open", false);
             panel_Credits.SetActive(false);
+            panel_HowToPlay.SetActive(false);
         }
+    }
+
+    public void ButtonPressed_HowToPlay()
+    {
+        panel_HowToPlay.SetActive(!panel_HowToPlay.activeSelf);
+        panel_Credits.SetActive(false);
+    }
+
+    public void ButtonPressed_Credits()
+    {
+        panel_Credits.SetActive(!panel_Credits.activeSelf);
+        panel_HowToPlay.SetActive(false);
+
     }
 
     public void ButtonPressed_Github()
@@ -291,5 +322,20 @@ public partial class UIController : MonoBehaviour
     public void ButtonPressed_FollowTheNumbers()
     {
         Application.OpenURL("https://play.google.com/store/apps/details?id=com.HundredMsGameS.followTheNumbers");
+    }
+
+    public void ButtonPressed_Samil()
+    {
+        Application.OpenURL("http://samilsoftsam.com");
+    }
+
+    public void ButtonPressed_Melih()
+    {
+        Application.OpenURL("http://nobrainexception.com");
+    }
+
+    public void ButtonPressed_Murat()
+    {
+        Application.OpenURL("https://www.mehmetmuratyilmaz.com/");
     }
 }
