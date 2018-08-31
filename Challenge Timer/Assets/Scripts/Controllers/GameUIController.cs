@@ -131,6 +131,7 @@ public partial class UIController : MonoBehaviour
             text_TimeIntervals[i].gameObject.SetActive(false);
         }
 
+        text_losetext[playerIdx].gameObject.SetActive(false);
         text_losetext[otherPlayer].gameObject.SetActive(true);
         text_losetext[otherPlayer].text = StringLiterals.BetterLuckObjectText;
         text_scores[playerIdx].text = value.ToString();
