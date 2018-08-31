@@ -53,7 +53,7 @@ public partial class UIController : MonoBehaviour
     private int allTimersStarted;
     private int gameInfoClosedCounter;
     private bool settingsPanelShow = false;
-
+    int selectedInfoPageNumber;
     /*
      Game Screen Color
      FF006C => pinkish
@@ -180,6 +180,8 @@ public partial class UIController : MonoBehaviour
             InfoHeaderText[1].text = header;
             InfoContentText[1].text = content;
         }
+
+        selectedInfoPageNumber = type;
     }
 
     public void ChallengeTypeSelectorButtons_OnClick(int selectedPage)
@@ -271,7 +273,7 @@ public partial class UIController : MonoBehaviour
         panel_Languages.GetComponent<Animator>().SetBool("open", false);
 
         INFO_TOP(0);
-        INFO_BOTTOM(0);
+        INFO_BOTTOM(selectedInfoPageNumber);
         SetTextsForLanguages();
         PlayerPrefs.SetInt("lang", language);
     }
