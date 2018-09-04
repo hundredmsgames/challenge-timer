@@ -91,7 +91,7 @@ public static class StringLiterals
             switch (language)
             {
                 case Language.TURKISH:
-                    return "Sonraki zaman aralığı";
+                    return "kadar say";
                 case Language.ENGLISH:
                     return "Count up to";
                 default:
@@ -224,10 +224,9 @@ public static class StringLiterals
             switch (language)
             {
                 case Language.TURKISH:
-                    return "Yarım saniye hata yapma şansınız var. İçinizden saymanız gereken sürenin rasgele değişken " +
-                            "olması konusunda dikkat edin."; ;
+                    return "Bu challenge'da içinizden saymanız gereken süre rastgele (1-5 saniye) aralığında gelecektir.";
                 case Language.ENGLISH:
-                    return "You have a chance to make mistake half a second.Be careful time will be changing randomly that you have to follow during the game.";
+                    return "Be careful time will be changing randomly (1-5 secs) that you have to follow during the game.";
                 default:
                     return "";
             }
@@ -260,7 +259,7 @@ public static class StringLiterals
                     return"Yarım saniye hata yapma şansınız var. İçinizden saymanız gereken sürenin zamanla " +
                             "artacağına dikkat edin.";
                 case Language.ENGLISH:
-                    return "You have a chance to make mistake half a second.Be careful time will be increasing that you have to follow during the game.";
+                    return "You have a chance to make a half-second mistake. Be careful time will be increasing that you have to follow during the game.";
                 default:
                     return "";
             }
@@ -290,10 +289,9 @@ public static class StringLiterals
             switch (language)
             {
                 case Language.TURKISH:
-                    return "Yarım saniye hata yapma şansınız var. İçinizden saymanız gereken sürenin zamanla " +
-                            "artacağına dikkat edin. Bu challenge küçük arkadaşlarımız için olduğundan zaman açık olarak oynanacaktır.";
+                    return "Bu challenge küçük arkadaşlarımız için olduğundan zaman açık olarak oynanacaktır.";
                 case Language.ENGLISH:
-                    return "You have a chance to make mistake half a second.Be careful time will be increasing that you have to follow during the game. This challenge for our little friends so timer will be on.";
+                    return "This challenge is for our little friends so timer will be on.";
                 default:
                     return "";
             }

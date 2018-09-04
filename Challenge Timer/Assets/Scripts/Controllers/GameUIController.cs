@@ -150,14 +150,63 @@ public partial class UIController : MonoBehaviour
     private void UpdateTimeInterval(object timeInterval, int playerIdx)
     {
         TextMeshProUGUI interval = text_TimeIntervals[playerIdx];
+        interval.gameObject.SetActive(false);
 
-        // FIXME: If same number comes consecutively in random challenge
-        // It will not pop up. Find better way!
-        if (interval.text != timeInterval.ToString())
-            interval.gameObject.SetActive(false);
+        if (StringLiterals.language == Language.ENGLISH)
+        {
+            interval.text = StringLiterals.IntervalObjectText + " " + ((int)timeInterval / 1000).ToString();
+        }
+        else
+        {
+            interval.text = GetSuffixOfInterval((int)timeInterval / 1000) + StringLiterals.IntervalObjectText;
+        }
 
-        interval.text = StringLiterals.IntervalObjectText + " " + ((int)timeInterval / 1000).ToString();
         interval.gameObject.SetActive(true);
+    }
+
+    private string GetSuffixOfInterval(int interval)
+    {
+        string suffix = "";
+        if(interval % 10 == 0)
+        {
+            switch (interval)
+            {
+                case 50:
+                case 20:
+                    suffix = "'ye";
+                    break;
+                case 40:
+                case 30:
+                case 10:
+                    suffix = "'a";
+                    break;
+            }
+        }
+        else
+        {
+            switch (interval % 10)
+            {
+                case 9:
+                    suffix = "'a";
+                    break;
+                case 8:
+                case 7:
+                case 5:
+                case 4:
+                case 3:
+                case 1:
+                    suffix = "'e";
+                    break;
+                case 6:
+                    suffix = "'ya";
+                    break;
+                case 2:
+                    suffix = "'ye";
+                    break;
+            }
+        }
+
+        return interval.ToString() + suffix + " ";
     }
 
     private void UpdateError(object error, int playerIdx)
