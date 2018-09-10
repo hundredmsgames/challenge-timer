@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Panel100msScript : MonoBehaviour
+public class LogoPanelScript : MonoBehaviour
 {
+    public GameObject panel;
+
     public void AnimationEnded()
     {
-        Destroy(this.gameObject);
+        Destroy(panel);
     }
 }
