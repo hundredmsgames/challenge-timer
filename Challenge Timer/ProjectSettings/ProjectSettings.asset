@@ -118,7 +118,7 @@ PlayerSettings:
     16:10: 1
     16:9: 1
     Others: 1
-  bundleVersion: 1.2
+  bundleVersion: 1.3
   preloadedAssets: []
   metroInputSource: 0
   wsaTransparentSwapchain: 0
@@ -154,7 +154,7 @@ PlayerSettings:
     Android: com.hundredmsgames.challengetimer
     Standalone: com.Company.ProductName
   buildNumber: {}
-  AndroidBundleVersionCode: 6
+  AndroidBundleVersionCode: 7
   AndroidMinSdkVersion: 16
   AndroidTargetSdkVersion: 0
   AndroidPreferredInstallLocation: 1
@@ -753,11 +753,15 @@ PlayerSettings:
       daydreamIconForeground: {fileID: 0}
       daydreamIconBackground: {fileID: 0}
   cloudServicesEnabled:
-    UNet: 1
+    Build: 0
+    Collab: 0
+    ErrorHub: 0
+    Hub: 0
+    UNet: 0
   facebookSdkVersion: 7.9.4
   apiCompatibilityLevel: 2
   cloudProjectId: 
-  projectName: Template_2D
+  projectName: 
   organizationId: 
   cloudEnabled: 0
   enableNativePlatformBackendsForNewInputSystem: 0
